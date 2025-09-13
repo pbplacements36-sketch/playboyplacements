@@ -10,7 +10,7 @@ const Hero = () => {
             <p className='subheading hero'>PlayboyPlacement ek professional platform hai jahan verified ladkiyan aapse milna chahti hain, aapke saath time spend karti hain aur uske badle me aapko handsome payment karti hain. Safe, secure aur 100% genuine system.</p>
 
             <div className="btn-container">
-                <Link href="#" className='btn-primary'>Create Free Profile</Link>
+                <Link href="/auth" className='btn-primary'>Create Free Profile</Link>
                 <Link href="#" className='btn-secondary'>Learn More</Link>
             </div>
         </div>
