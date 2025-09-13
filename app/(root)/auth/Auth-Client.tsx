@@ -163,22 +163,6 @@ const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
   return (
     <>
     {showVerification ? (
-        // <form onSubmit={handleVerify} className="verification-form">
-        //     <div className="input-container">
-        //     <label htmlFor="verificationCode">Enter Verification Code</label>
-        //     <input
-        //         type="text"
-        //         name="verificationCode"
-        //         value={verificationCode}
-        //         onChange={e => setVerificationCode(e.target.value)}
-        //         placeholder="6-digit code"
-        //     />
-        //     </div>
-        //     <button type="submit" disabled={verifying}>
-        //     {verifying ? "Verifying..." : "Verify Email"}
-        //     </button>
-        //     {error && <div className="error-message">{error}</div>}
-        // </form>
         <div className='verification-page'>
             <div className="verification-container">
                 <div className="image-container">
@@ -265,7 +249,7 @@ const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
                 </div>
                 <div className="input-container">
                     <label htmlFor="password">Create Password</label>
-                    <input type="text" placeholder='Enter Password' name='password' value={password} onChange={e => setPassword(e.target.value)}/>
+                    <input type="password" placeholder='••••••••••••' name='password' value={password} onChange={e => setPassword(e.target.value)}/>
                 </div></>}
                 
                 {error && <div className="error-message">{error}</div>}
