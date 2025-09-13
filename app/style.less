@@ -338,6 +338,17 @@ h6 {
   font-size: 1.36rem;
 }
 
+.heading.auth {
+  text-transform: none;
+  font-family: @gil_bold;
+  -webkit-text-fill-color: @color_primary;
+  background: none;
+  font-size: 1.4rem;
+  max-width: 220px;
+  text-align: center;
+  line-height: 22px;
+}
+
 .subheading {
   font-family: @gil_medium;
   font-size: 0.96rem;
@@ -478,6 +489,8 @@ h6 {
   max-width: 480px;
   margin: 0 auto;
   padding: 0;
+  justify-content: center;
+  height: 100%;
 
   .navigation {
     display: flex;
@@ -1573,6 +1586,294 @@ h6 {
         height: 36px;
         object-fit: contain;
         cursor: pointer;
+      }
+    }
+  }
+
+  .auth-page {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .image-container {
+      width: 100%;
+      height: 34vh;
+      position: relative;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: -webkit-fill-available;
+        position: absolute;
+        top: -20px;
+        transform: scale(1.35);
+        object-fit: contain;
+      }
+    }
+
+    .auth-container {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      align-items: center;
+      margin-top: -12px;
+
+      .text-container {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        align-items: center;
+        padding: 0 32px;
+
+        img {
+          width: 180px;
+          object-fit: contain;
+        }
+      }
+    }
+
+    .form-container {
+      display: flex;
+      flex-direction: column;
+      padding: 16px 40px 0 40px;
+      align-items: center;
+
+      form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        .input-container {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+
+          label {
+            font-family: @gil_medium;
+            font-size: 0.76rem;
+            color: #666666;
+          }
+
+          input {
+            width: -webkit-fill-available;
+            height: 40px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            background: #fafafa;
+            border-radius: 8px;
+            padding: 12px;
+            font-family: @gil_medium;
+            font-size: 0.88rem;
+            color: #54432e;
+
+            &::placeholder {
+              color: #a3a3a3;
+            }
+          }
+        }
+
+        button {
+          background: #54432e;
+          border: none;
+          border-radius: 8px;
+          padding: 12px 16px;
+          font-family: @gil_bold;
+          font-size: 1.08rem;
+          color: #fff;
+          cursor: pointer;
+          margin-top: 8px;
+        }
+      }
+    }
+
+    .providers-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin: 20px 0;
+
+      .divider-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        padding: 0 48px;
+        margin-bottom: 8px;
+
+        .d-line {
+          flex: 1;
+          height: 1px;
+          background: #e0e0e0;
+        }
+
+        p {
+          font-family: @gil_medium;
+          font-size: 0.88rem;
+          color: #666666;
+        }
+      }
+
+      .socials {
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+        justify-content: center;
+        margin-bottom: 8px;
+
+        .social {
+          width: 56px;
+          height: 56px;
+          object-fit: contain;
+          cursor: pointer;
+          border: 2px solid rgba(0, 0, 0, 0.08);
+          border-radius: 100px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          img {
+            width: 26px;
+            height: 26px;
+            object-fit: contain;
+            cursor: pointer;
+          }
+        }
+      }
+
+      p {
+        font-family: @gil_medium;
+        font-size: 0.88rem;
+        color: #666666;
+        text-align: center;
+
+        span {
+          color: #54432e;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
+  .verification-page {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+
+    .verification-container {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      align-items: center;
+      padding: 0 40px;
+
+      .image-container {
+        width: 48px;
+        height: 48px;
+        padding: 6px;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        border-radius: 16px;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
+      }
+
+      .text-container {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+
+        h2 {
+          font-family: @gil_bold;
+          font-size: 1.24rem;
+          color: @color_primary;
+          text-align: center;
+        }
+
+        p {
+          font-family: @gil_medium;
+          font-size: 0.96rem;
+          color: #7a7a7a;
+          text-align: center;
+
+          span {
+            color: #54432e;
+            text-decoration: underline;
+            cursor: pointer;
+          }
+        }
+      }
+
+      .form-container {
+        form {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+
+          .input-container {
+            display: flex;
+            width: 100%;
+
+            .otp-inputs {
+              display: flex;
+              flex-direction: row;
+              gap: 12px;
+              justify-content: center;
+              width: 100%;
+
+              input {
+                width: 48px;
+                height: 48px;
+                border: 1px solid rgba(0, 0, 0, 0.08);
+                background: #fafafa;
+                border-radius: 8px;
+                padding: 12px;
+                font-family: @gil_bold;
+                font-size: 1.32rem;
+                color: #54432e;
+                text-align: center;
+
+                &::placeholder {
+                  color: #a3a3a3;
+                }
+              }
+            }
+          }
+
+          button {
+            background: #54432e;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-family: @gil_bold;
+            font-size: 1.08rem;
+            color: #fff;
+            cursor: pointer;
+            margin-top: 8px;
+            width: 100%;
+            font-weight: 100;
+          }
+        }
+      }
+
+      button {
+        background: #fff;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-family: @gil_bold;
+        font-size: 1.08rem;
+        color: #54432e;
+        cursor: pointer;
+        margin-top: 8px;
+        width: 90%;
+        font-weight: 100;
       }
     }
   }

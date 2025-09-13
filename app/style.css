@@ -293,6 +293,16 @@ h6 {
   background: none;
   font-size: 1.36rem;
 }
+.heading.auth {
+  text-transform: none;
+  font-family: Gilroy-Bold;
+  -webkit-text-fill-color: #54432e;
+  background: none;
+  font-size: 1.4rem;
+  max-width: 220px;
+  text-align: center;
+  line-height: 22px;
+}
 .subheading {
   font-family: Gilroy-Medium;
   font-size: 0.96rem;
@@ -410,6 +420,8 @@ h6 {
   max-width: 480px;
   margin: 0 auto;
   padding: 0;
+  justify-content: center;
+  height: 100%;
 }
 .root .navigation {
   display: flex;
@@ -1354,6 +1366,255 @@ h6 {
   height: 36px;
   object-fit: contain;
   cursor: pointer;
+}
+.root .auth-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.root .auth-page .image-container {
+  width: 100%;
+  height: 34vh;
+  position: relative;
+  overflow: hidden;
+}
+.root .auth-page .image-container img {
+  width: 100%;
+  height: -webkit-fill-available;
+  position: absolute;
+  top: -20px;
+  transform: scale(1.35);
+  object-fit: contain;
+}
+.root .auth-page .auth-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  margin-top: -12px;
+}
+.root .auth-page .auth-container .text-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  padding: 0 32px;
+}
+.root .auth-page .auth-container .text-container img {
+  width: 180px;
+  object-fit: contain;
+}
+.root .auth-page .form-container {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 40px 0 40px;
+  align-items: center;
+}
+.root .auth-page .form-container form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.root .auth-page .form-container form .input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.root .auth-page .form-container form .input-container label {
+  font-family: Gilroy-Medium;
+  font-size: 0.76rem;
+  color: #666666;
+}
+.root .auth-page .form-container form .input-container input {
+  width: -webkit-fill-available;
+  height: 40px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #fafafa;
+  border-radius: 8px;
+  padding: 12px;
+  font-family: Gilroy-Medium;
+  font-size: 0.88rem;
+  color: #54432e;
+}
+.root .auth-page .form-container form .input-container input::placeholder {
+  color: #a3a3a3;
+}
+.root .auth-page .form-container form button {
+  background: #54432e;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-family: Gilroy-Bold;
+  font-size: 1.08rem;
+  color: #fff;
+  cursor: pointer;
+  margin-top: 8px;
+}
+.root .auth-page .providers-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 20px 0;
+}
+.root .auth-page .providers-container .divider-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 0 48px;
+  margin-bottom: 8px;
+}
+.root .auth-page .providers-container .divider-container .d-line {
+  flex: 1;
+  height: 1px;
+  background: #e0e0e0;
+}
+.root .auth-page .providers-container .divider-container p {
+  font-family: Gilroy-Medium;
+  font-size: 0.88rem;
+  color: #666666;
+}
+.root .auth-page .providers-container .socials {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+.root .auth-page .providers-container .socials .social {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  cursor: pointer;
+  border: 2px solid rgba(0, 0, 0, 0.08);
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.root .auth-page .providers-container .socials .social img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  cursor: pointer;
+}
+.root .auth-page .providers-container p {
+  font-family: Gilroy-Medium;
+  font-size: 0.88rem;
+  color: #666666;
+  text-align: center;
+}
+.root .auth-page .providers-container p span {
+  color: #54432e;
+  text-decoration: underline;
+}
+.root .verification-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+.root .verification-page .verification-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  padding: 0 40px;
+}
+.root .verification-page .verification-container .image-container {
+  width: 48px;
+  height: 48px;
+  padding: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 16px;
+}
+.root .verification-page .verification-container .image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.root .verification-page .verification-container .text-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+.root .verification-page .verification-container .text-container h2 {
+  font-family: Gilroy-Bold;
+  font-size: 1.24rem;
+  color: #54432e;
+  text-align: center;
+}
+.root .verification-page .verification-container .text-container p {
+  font-family: Gilroy-Medium;
+  font-size: 0.96rem;
+  color: #7a7a7a;
+  text-align: center;
+}
+.root .verification-page .verification-container .text-container p span {
+  color: #54432e;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.root .verification-page .verification-container .form-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.root .verification-page .verification-container .form-container form .input-container {
+  display: flex;
+  width: 100%;
+}
+.root .verification-page .verification-container .form-container form .input-container .otp-inputs {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  justify-content: center;
+  width: 100%;
+}
+.root .verification-page .verification-container .form-container form .input-container .otp-inputs input {
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #fafafa;
+  border-radius: 8px;
+  padding: 12px;
+  font-family: Gilroy-Bold;
+  font-size: 1.32rem;
+  color: #54432e;
+  text-align: center;
+}
+.root .verification-page .verification-container .form-container form .input-container .otp-inputs input::placeholder {
+  color: #a3a3a3;
+}
+.root .verification-page .verification-container .form-container form button {
+  background: #54432e;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-family: Gilroy-Bold;
+  font-size: 1.08rem;
+  color: #fff;
+  cursor: pointer;
+  margin-top: 8px;
+  width: 100%;
+  font-weight: 100;
+}
+.root .verification-page .verification-container button {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-family: Gilroy-Bold;
+  font-size: 1.08rem;
+  color: #54432e;
+  cursor: pointer;
+  margin-top: 8px;
+  width: 90%;
+  font-weight: 100;
 }
 .root .whatsapp-section .image-container::-webkit-scrollbar {
   display: none;
