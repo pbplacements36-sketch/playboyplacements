@@ -11,7 +11,7 @@ const Hero = () => {
 
             <div className="btn-container">
                 <Link href="/auth" className='btn-primary'>Create Free Profile</Link>
-                <Link href="#" className='btn-secondary'>Learn More</Link>
+                <Link href="/auth" className='btn-secondary'>Learn More</Link>
             </div>
         </div>
         <Image src="/assets/hero-bg.png" alt="Hero Image" width={600} height={400} />
