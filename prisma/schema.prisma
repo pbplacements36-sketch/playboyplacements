@@ -16,20 +16,22 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(uuid())
-  name          String
-  email         String    @unique
-  emailVerified Boolean   @default(false)
-  image         String?
-  phone         String? // Added
-  age           Int? // Added
-  city          String? // Added
-  country       String? // Added
-  password      String? // Added
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now()) @updatedAt
-  sessions      Session[]
-  accounts      Account[]
+  id             String    @id @default(uuid())
+  name           String
+  email          String    @unique
+  emailVerified  Boolean   @default(false)
+  image          String?
+  phone          String? // Added
+  age            Int? // Added
+  city           String? // Added
+  country        String? // Added
+  password       String? // Added
+  membershipType String    @default("inactive")
+  galleryImages  String[]  @default([]) // Added
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @default(now()) @updatedAt
+  sessions       Session[]
+  accounts       Account[]
 
   @@map("user")
 }

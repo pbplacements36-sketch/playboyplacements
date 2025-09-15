@@ -1203,6 +1203,7 @@ export namespace Prisma {
     city: string | null
     country: string | null
     password: string | null
+    membershipType: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -1218,6 +1219,7 @@ export namespace Prisma {
     city: string | null
     country: string | null
     password: string | null
+    membershipType: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -1233,6 +1235,8 @@ export namespace Prisma {
     city: number
     country: number
     password: number
+    membershipType: number
+    galleryImages: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -1258,6 +1262,7 @@ export namespace Prisma {
     city?: true
     country?: true
     password?: true
+    membershipType?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -1273,6 +1278,7 @@ export namespace Prisma {
     city?: true
     country?: true
     password?: true
+    membershipType?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -1288,6 +1294,8 @@ export namespace Prisma {
     city?: true
     country?: true
     password?: true
+    membershipType?: true
+    galleryImages?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -1390,6 +1398,8 @@ export namespace Prisma {
     city: string | null
     country: string | null
     password: string | null
+    membershipType: string
+    galleryImages: string[]
     createdAt: Date
     updatedAt: Date
     _count: UserCountAggregateOutputType | null
@@ -1424,6 +1434,8 @@ export namespace Prisma {
     city?: boolean
     country?: boolean
     password?: boolean
+    membershipType?: boolean
+    galleryImages?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     sessions?: boolean | User$sessionsArgs<ExtArgs>
@@ -1442,6 +1454,8 @@ export namespace Prisma {
     city?: boolean
     country?: boolean
     password?: boolean
+    membershipType?: boolean
+    galleryImages?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -1457,6 +1471,8 @@ export namespace Prisma {
     city?: boolean
     country?: boolean
     password?: boolean
+    membershipType?: boolean
+    galleryImages?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -1472,11 +1488,13 @@ export namespace Prisma {
     city?: boolean
     country?: boolean
     password?: boolean
+    membershipType?: boolean
+    galleryImages?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "phone" | "age" | "city" | "country" | "password" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "phone" | "age" | "city" | "country" | "password" | "membershipType" | "galleryImages" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
@@ -1502,6 +1520,8 @@ export namespace Prisma {
       city: string | null
       country: string | null
       password: string | null
+      membershipType: string
+      galleryImages: string[]
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["user"]>
@@ -1939,6 +1959,8 @@ export namespace Prisma {
     readonly city: FieldRef<"User", 'String'>
     readonly country: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
+    readonly membershipType: FieldRef<"User", 'String'>
+    readonly galleryImages: FieldRef<"User", 'String[]'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
@@ -5687,6 +5709,8 @@ export namespace Prisma {
     city: 'city',
     country: 'country',
     password: 'password',
+    membershipType: 'membershipType',
+    galleryImages: 'galleryImages',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -5848,6 +5872,8 @@ export namespace Prisma {
     city?: StringNullableFilter<"User"> | string | null
     country?: StringNullableFilter<"User"> | string | null
     password?: StringNullableFilter<"User"> | string | null
+    membershipType?: StringFilter<"User"> | string
+    galleryImages?: StringNullableListFilter<"User">
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     sessions?: SessionListRelationFilter
@@ -5865,6 +5891,8 @@ export namespace Prisma {
     city?: SortOrderInput | SortOrder
     country?: SortOrderInput | SortOrder
     password?: SortOrderInput | SortOrder
+    membershipType?: SortOrder
+    galleryImages?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     sessions?: SessionOrderByRelationAggregateInput
@@ -5885,6 +5913,8 @@ export namespace Prisma {
     city?: StringNullableFilter<"User"> | string | null
     country?: StringNullableFilter<"User"> | string | null
     password?: StringNullableFilter<"User"> | string | null
+    membershipType?: StringFilter<"User"> | string
+    galleryImages?: StringNullableListFilter<"User">
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     sessions?: SessionListRelationFilter
@@ -5902,6 +5932,8 @@ export namespace Prisma {
     city?: SortOrderInput | SortOrder
     country?: SortOrderInput | SortOrder
     password?: SortOrderInput | SortOrder
+    membershipType?: SortOrder
+    galleryImages?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
@@ -5925,6 +5957,8 @@ export namespace Prisma {
     city?: StringNullableWithAggregatesFilter<"User"> | string | null
     country?: StringNullableWithAggregatesFilter<"User"> | string | null
     password?: StringNullableWithAggregatesFilter<"User"> | string | null
+    membershipType?: StringWithAggregatesFilter<"User"> | string
+    galleryImages?: StringNullableListFilter<"User">
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
@@ -6162,6 +6196,8 @@ export namespace Prisma {
     city?: string | null
     country?: string | null
     password?: string | null
+    membershipType?: string
+    galleryImages?: UserCreategalleryImagesInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -6179,6 +6215,8 @@ export namespace Prisma {
     city?: string | null
     country?: string | null
     password?: string | null
+    membershipType?: string
+    galleryImages?: UserCreategalleryImagesInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -6196,6 +6234,8 @@ export namespace Prisma {
     city?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
+    membershipType?: StringFieldUpdateOperationsInput | string
+    galleryImages?: UserUpdategalleryImagesInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -6213,6 +6253,8 @@ export namespace Prisma {
     city?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
+    membershipType?: StringFieldUpdateOperationsInput | string
+    galleryImages?: UserUpdategalleryImagesInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -6230,6 +6272,8 @@ export namespace Prisma {
     city?: string | null
     country?: string | null
     password?: string | null
+    membershipType?: string
+    galleryImages?: UserCreategalleryImagesInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -6245,6 +6289,8 @@ export namespace Prisma {
     city?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
+    membershipType?: StringFieldUpdateOperationsInput | string
+    galleryImages?: UserUpdategalleryImagesInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -6260,6 +6306,8 @@ export namespace Prisma {
     city?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
+    membershipType?: StringFieldUpdateOperationsInput | string
+    galleryImages?: UserUpdategalleryImagesInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -6560,6 +6608,14 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type StringNullableListFilter<$PrismaModel = never> = {
+    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    has?: string | StringFieldRefInput<$PrismaModel> | null
+    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
+    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -6607,6 +6663,8 @@ export namespace Prisma {
     city?: SortOrder
     country?: SortOrder
     password?: SortOrder
+    membershipType?: SortOrder
+    galleryImages?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -6626,6 +6684,7 @@ export namespace Prisma {
     city?: SortOrder
     country?: SortOrder
     password?: SortOrder
+    membershipType?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -6641,6 +6700,7 @@ export namespace Prisma {
     city?: SortOrder
     country?: SortOrder
     password?: SortOrder
+    membershipType?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -6861,6 +6921,10 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type UserCreategalleryImagesInput = {
+    set: string[]
+  }
+
   export type SessionCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -6907,6 +6971,11 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type UserUpdategalleryImagesInput = {
+    set?: string[]
+    push?: string | string[]
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
@@ -7321,6 +7390,8 @@ export namespace Prisma {
     city?: string | null
     country?: string | null
     password?: string | null
+    membershipType?: string
+    galleryImages?: UserCreategalleryImagesInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountCreateNestedManyWithoutUserInput
@@ -7337,6 +7408,8 @@ export namespace Prisma {
     city?: string | null
     country?: string | null
     password?: string | null
+    membershipType?: string
+    galleryImages?: UserCreategalleryImagesInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
@@ -7369,6 +7442,8 @@ export namespace Prisma {
     city?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
+    membershipType?: StringFieldUpdateOperationsInput | string
+    galleryImages?: UserUpdategalleryImagesInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
@@ -7385,6 +7460,8 @@ export namespace Prisma {
     city?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
+    membershipType?: StringFieldUpdateOperationsInput | string
+    galleryImages?: UserUpdategalleryImagesInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
@@ -7401,6 +7478,8 @@ export namespace Prisma {
     city?: string | null
     country?: string | null
     password?: string | null
+    membershipType?: string
+    galleryImages?: UserCreategalleryImagesInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -7417,6 +7496,8 @@ export namespace Prisma {
     city?: string | null
     country?: string | null
     password?: string | null
+    membershipType?: string
+    galleryImages?: UserCreategalleryImagesInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -7449,6 +7530,8 @@ export namespace Prisma {
     city?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
+    membershipType?: StringFieldUpdateOperationsInput | string
+    galleryImages?: UserUpdategalleryImagesInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -7465,6 +7548,8 @@ export namespace Prisma {
     city?: NullableStringFieldUpdateOperationsInput | string | null
     country?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
+    membershipType?: StringFieldUpdateOperationsInput | string
+    galleryImages?: UserUpdategalleryImagesInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput

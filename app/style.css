@@ -413,6 +413,25 @@ h6 {
   font-size: 0.96rem;
   color: #54432e;
 }
+.dashboard-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.dashboard-header .logo img {
+  height: 56px;
+  object-fit: contain;
+}
+.dashboard-header .profile-pic {
+  margin-bottom: 4px;
+}
+.dashboard-header .profile-pic img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
 .root {
   display: flex;
   flex-direction: column;
@@ -1616,9 +1635,489 @@ h6 {
   width: 90%;
   font-weight: 100;
 }
+.root .dashboard-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100vh;
+  position: relative;
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  width: 100%;
+  padding: 16px;
+  overflow: hidden;
+}
+.root .dashboard-page .bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 16px 32px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
+}
+.root .dashboard-page .bottom-nav .nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+}
+.root .dashboard-page .bottom-nav .nav-item img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+.root .dashboard-page .bottom-nav.dark {
+  background: #181817;
+}
+.root .dashboard-page .bottom-nav.dark .nav-item img {
+  filter: invert(1);
+}
+.root .dashboard-page.profile {
+  background: #0b0c0c;
+  overflow-y: scroll !important;
+  padding: 0;
+  padding-top: 40px;
+}
+.root .dashboard-page.profile .profile-photo-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+.root .dashboard-page.profile .profile-photo-container .photo-border-wrapper {
+  display: inline-block;
+  padding: 4px;
+  border-radius: 50%;
+  background: linear-gradient(-145.119deg, #f58b20 0%, #fccaaa 24%, #ea99db 46%, #cc8af1 73%, #fdabbf 100%);
+  box-shadow: 0px 0px 250px 0px #db61c11b, 0px 0px 250px 0px #db61c144, 0px 0px 174.72000122px 0px #db61c172, 0px 0px 87.36000061px 0px #db61c127, 0px 0px 24.95999908px 0px #db61c1ba, 0px 0px 12.47999954px 0px #db61c11c;
+}
+.root .dashboard-page.profile .profile-photo-container .photo-border-wrapper .photo-container {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #0b0c0c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+.root .dashboard-page.profile .profile-photo-container .photo-border-wrapper .photo-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.root .dashboard-page.profile .profile-photo-container .glow {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+}
+.root .dashboard-page.profile .profile-photo-container .glow.left {
+  background: url(/assets/profile/glow-left.png);
+  top: -100px;
+  left: -100px;
+  z-index: 10;
+  background-position: center;
+  background-size: cover;
+  filter: blur(52px);
+}
+.root .dashboard-page.profile .profile-photo-container .glow.right {
+  background: url(/assets/profile/glow-right.png);
+  top: -100px;
+  right: -100px;
+  z-index: 10;
+  background-position: center;
+  background-size: cover;
+  filter: blur(52px);
+}
+.root .dashboard-page.profile .name-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin: 16px 0;
+  padding: 0 16px;
+}
+.root .dashboard-page.profile .name-container h3 {
+  font-family: Gilroy-SemiBold;
+  line-height: 26px;
+  font-size: 1.42rem;
+  color: #fff;
+}
+.root .dashboard-page.profile .name-container h3 span {
+  font-family: Gilroy-Bold;
+}
+.root .dashboard-page.profile .name-container .status-container {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  background: #1f1d20;
+  border-radius: 8px;
+  padding: 6px 12px;
+  align-items: center;
+}
+.root .dashboard-page.profile .name-container .status-container img {
+  width: 28px;
+  height: 28px;
+}
+.root .dashboard-page.profile .name-container .status-container p {
+  font-family: Gilroy-SemiBold;
+  font-size: 0.96rem;
+  color: #ed942f;
+}
+.root .dashboard-page.profile .name-container .status-container.active {
+  border: 1px solid #ed942f;
+}
+.root .dashboard-page.profile .name-container .status-container.active p {
+  color: #ed942f;
+}
+.root .dashboard-page.profile .name-container .status-container.not-active {
+  border: 1px solid #ed2f2f;
+}
+.root .dashboard-page.profile .name-container .status-container.not-active p {
+  color: #ed2f2f;
+}
+.root .dashboard-page.profile .form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  padding: 0 16px;
+}
+.root .dashboard-page.profile .form-container .input {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.root .dashboard-page.profile .form-container .input img {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 24px;
+  height: 24px;
+}
+.root .dashboard-page.profile .form-container .input input {
+  width: -webkit-fill-available;
+  background: #191919;
+  border-radius: 8px;
+  padding: 12px;
+  padding-left: 44px;
+  font-family: Gilroy-Medium;
+  font-size: 1rem;
+  color: #fff;
+}
+.root .dashboard-page.profile .form-container .input input::placeholder {
+  color: #666666;
+}
+.root .dashboard-page.profile .form-container .input-row {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+.root .dashboard-page.profile .form-container .input-row .input {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.root .dashboard-page.profile .form-container .gallery-container {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin: 8px 0 12px 0;
+  width: 100%;
+}
+.root .dashboard-page.profile .form-container .gallery-container .upload-container {
+  width: 180px;
+  height: auto;
+  border: 2px dashed rgba(255, 255, 255, 0.24);
+  border-radius: 12px;
+  display: flex;
+  gap: 4px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: #191919;
+  flex: 0.6;
+  padding: 12px;
+}
+.root .dashboard-page.profile .form-container .gallery-container .upload-container img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+.root .dashboard-page.profile .form-container .gallery-container .upload-container p {
+  font-family: Gilroy-Medium;
+  font-size: 0.76rem;
+  color: #7a7a7a;
+  margin-top: 4px;
+  text-align: center;
+  line-height: 14px;
+}
+.root .dashboard-page.profile .form-container .gallery-container .img-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 8px;
+  min-width: 160px;
+  flex: 1;
+}
+.root .dashboard-page.profile .form-container .gallery-container .img-grid .img-box {
+  width: 100%;
+  aspect-ratio: 1 / 0;
+  background: #191919;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.root .dashboard-page.profile .form-container .gallery-container .img-grid .img-box img {
+  width: 20px;
+  height: 20px;
+  object-fit: cover;
+}
+.root .dashboard-page.profile .form-container button {
+  font-family: Gilroy-ExtraBold;
+  font-size: 1rem;
+  background: linear-gradient(-92.715deg, rgba(243, 216, 170, 0.9) 0%, rgba(222, 188, 125, 0.92) 32%, #ad823d 100%);
+  color: #3d2908;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.3s ease;
+  flex: 1;
+  text-wrap: nowrap;
+  box-shadow: inset 0px 4px 4px 0px rgba(61, 41, 8, 0.8), inset -4px -4px 4px 0px #3d2908;
+}
+.root .dashboard-page.profile .form-container button:hover {
+  box-shadow: inset 0px 6px 6px 0px rgba(61, 41, 8, 0.9), inset -6px -6px 6px 0px #3d2908;
+}
+.root .dashboard-page.profile .membership-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #292929;
+  padding: 24px 16px 80px 16px;
+}
+.root .dashboard-page.profile .membership-container h3 {
+  font-family: Gilroy-SemiBold;
+  font-size: 1.24rem;
+  color: #707070;
+  line-height: 22px;
+  text-align: center;
+}
+.root .dashboard-page.profile .membership-container h3 span {
+  font-family: Gilroy-Bold;
+  color: #fff;
+}
+.root .dashboard-page.profile .membership-container .packages-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin-top: 12px;
+  padding: 0;
+}
+.root .dashboard-page.profile .membership-container .packages-container .packs-container {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  overflow-x: scroll !important;
+  scrollbar-width: none;
+  /* Firefox */
+}
+.root .dashboard-page.profile .membership-container .packages-container .packs-container .package {
+  flex: 1;
+  background: #191919;
+  min-width: 300px;
+  border-radius: 20px;
+  border: 1.5px solid #666666;
+  padding: 16px;
+}
+.root .dashboard-page.profile .membership-container .packages-container .packs-container .package .content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 20px;
+}
+.root .dashboard-page.profile .membership-container .packages-container .packs-container .package .content .tag {
+  border: 1px solid #525252;
+  background: #292929;
+  width: fit-content;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+.root .dashboard-page.profile .membership-container .packages-container .packs-container .package .content .tag p {
+  font-family: SF-Medium;
+  font-size: 0.88rem;
+  letter-spacing: 0.32px;
+  color: #fff;
+}
+.root .dashboard-page.profile .membership-container .packages-container .packs-container .package .content span {
+  font-family: Gilroy-Bold;
+  font-size: 2.24rem;
+  color: #fff;
+  line-height: 1;
+}
+.root .dashboard-page.profile .membership-container .packages-container .packs-container .package .content p {
+  font-family: Gilroy-Medium;
+  font-size: 1.08rem;
+  color: #7a7a7a;
+  line-height: 20px;
+}
+.root .dashboard-page.profile .membership-container .packages-container .packs-container .package hr {
+  border: 1px solid #3d3d3d;
+}
+.root .dashboard-page.profile .membership-container .packages-container .packs-container .package .features {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px 8px 32px 8px;
+}
+.root .dashboard-page.profile .membership-container .packages-container .packs-container .package .features .feature {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+}
+.root .dashboard-page.profile .membership-container .packages-container .packs-container .package .features .feature p {
+  font-family: Gilroy-Medium;
+  font-size: 1rem;
+  letter-spacing: 0.32px;
+  color: #cccccc;
+}
+.root .dashboard-page.profile .membership-container .packages-container .packs-container .package button {
+  font-family: Gilroy-ExtraBold;
+  font-size: 1rem;
+  width: 100%;
+  background: linear-gradient(-92.715deg, #d0d0d0 0%, #ffffff 32%, #141414 100%);
+  color: #3d2908;
+  border: none;
+  border-radius: 80px;
+  padding: 12px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.3s ease;
+  flex: 1;
+  text-wrap: nowrap;
+  box-shadow: inset 0px 4px 4px 0px rgba(56, 55, 53, 0.8), inset -4px -4px 4px 0px #b6b4b1;
+}
+.root .dashboard-page.profile .membership-container .packages-container .packs-container .package.active {
+  border: 1.5px solid #e7d594;
+}
+.root .dashboard-page.profile .membership-container .packages-container .packs-container .best-pack .content .tag {
+  border: 1px solid #3f4b6e;
+  background: #1c2029;
+}
+.root .dashboard-page.profile .membership-container .packages-container .packs-container .best-pack .content .tag p {
+  color: #a3cfff;
+}
+.root .dashboard-page.profile .membership-container .packages-container .packs-container .gold-pack .content .tag {
+  border: 1px solid #77654b;
+  background: #2a2621;
+}
+.root .dashboard-page.profile .membership-container .packages-container .packs-container .gold-pack .content .tag p {
+  color: #fff5aa;
+}
+.root .dashboard-page.profile .membership-container .packages-container .packs-container .gold-pack button {
+  font-family: Gilroy-ExtraBold;
+  font-size: 1rem;
+  background: linear-gradient(-92.715deg, rgba(243, 216, 170, 0.9) 0%, rgba(222, 188, 125, 0.92) 32%, #ad823d 100%);
+  color: #3d2908;
+  border: none;
+  border-radius: 80px;
+  padding: 12px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.3s ease;
+  flex: 1;
+  text-wrap: nowrap;
+  box-shadow: inset 0px 4px 4px 0px rgba(61, 41, 8, 0.8), inset -4px -4px 4px 0px #3d2908;
+}
+.root .dashboard-page.profile .membership-container .payments-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 8px 4px;
+}
+.root .dashboard-page.profile .membership-container .payments-container span {
+  font-family: Gilroy-SemiBold;
+  font-size: 0.96rem;
+  color: #707070;
+  text-transform: uppercase;
+}
+.root .dashboard-page.profile .membership-container .payments-container .method-container {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+.root .dashboard-page.profile .membership-container .payments-container .method-container .method {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  background: #2e2e2e;
+  border-radius: 8px;
+  padding: 16px;
+}
+.root .dashboard-page.profile .membership-container .payments-container .method-container .method img {
+  height: 28px;
+  width: auto;
+}
+.root .dashboard-page.profile .membership-container .payments-container .method-container .method h3 {
+  font-family: Gilroy-Medium;
+  font-size: 1.08rem;
+  color: #fff;
+}
+.root .dashboard-page.profile .membership-container .payments-container .method-container .method.active {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
 .root .whatsapp-section .image-container::-webkit-scrollbar {
   display: none;
   /* 👉 Scrollbar hide */
+}
+.remove-btn {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  line-height: 18px;
+  padding: 0;
 }
 .sub-menu.open {
   display: flex;

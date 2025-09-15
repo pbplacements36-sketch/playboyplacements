@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Toaster } from "react-hot-toast";
 
 // import { auth } from "@/auth";
 
@@ -30,6 +31,7 @@ export default async function RootLayout({ children, }: { children: React.ReactN
         <body
           className="antialiased"
         >
+          <Toaster position="top-center" />
           {children}
         </body>
     </html>

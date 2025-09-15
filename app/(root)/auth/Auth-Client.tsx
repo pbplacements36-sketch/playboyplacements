@@ -3,6 +3,7 @@ import { signIn, signInSocial, signUp } from '@/lib/actions/auth-actions';
 import Image from 'next/image'
 import { useRouter } from 'next/navigation';
 import React, { useState, useRef } from 'react'
+import toast from "react-hot-toast";
 
 const AuthClientPage = () => {
     const [isSignIn, setIsSignIn] = useState(true);
@@ -43,48 +44,64 @@ const AuthClientPage = () => {
         setError("");
         try {
             if (isSignIn) {
-        const result = await signIn(email, password);
-        if (!result.user) setError("Invalid email or password");
-        else router.push("/");
-        } else {
-      // 1. Sign up with Better Auth
-        const result = await signUp(email, password, name);
-        if (!result.user) {
-            setError("Signup failed");
-            setIsLoading(false);
-            return;
-        }
+                let result: any;
 
-        // 2. Update extra fields via custom API
-        const res = await fetch("/api/user/update", {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-            email,
-            phone,
-            age,
-            city,
-            country,
-            }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Failed to update profile");
+                try {
+                    result = await signIn(email, password);
+                } catch (err: any) {
+                    // If Better Auth throws, show a friendly message
+                    setError("Invalid email or password");
+                    toast.success("Invalid email or password");
+                    setIsLoading(false);
+                    return;
+                }
+            
+                if (!result.user) {
+                    setError("Invalid email or password"); 
+                    toast.error("Invalid email or password");
+                }
+                else router.push("/profile");
+            } else {
+            // 1. Sign up with Better Auth
+                const result = await signUp(email, password, name);
+                if (!result.user) {
+                    setError("Signup failed");
+                    toast.error("Signup failed");
+                    setIsLoading(false);
+                    return;
+                }
 
-        // 3. Send verification code
-        const verifyRes = await fetch("/api/send-verification", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email }),
-        });
-        const verifyData = await verifyRes.json();
-        if (!verifyRes.ok) throw new Error(verifyData.error || "Failed to send verification code");
+            // 2. Update extra fields via custom API
+                const res = await fetch("/api/user/update", {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                    email,
+                    phone,
+                    age,
+                    city,
+                    country,
+                    }),
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(toast.error(data.error || "Unknown error"));
 
-        setShowVerification(true);
-        setIsLoading(false);
-        return;
+            // 3. Send verification code
+                const verifyRes = await fetch("/api/send-verification", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email }),
+                });
+                const verifyData = await verifyRes.json();
+                if (!verifyRes.ok) throw new Error(toast.error(verifyData.error || "Failed to send verification code"));
+
+                setShowVerification(true);
+                setIsLoading(false);
+                return;
         }
   } catch (err: any) {
       setError(err.message || "Unknown error");
+      toast.error(err.message || "Unknown error");
     } finally {
       setIsLoading(false);
     }
@@ -103,7 +120,7 @@ const AuthClientPage = () => {
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || "Invalid or expired code");
-            router.push("/");
+            router.push("/profile");
         } catch (err: any) {
             setError(err.message || "Unknown error");
         } finally {
