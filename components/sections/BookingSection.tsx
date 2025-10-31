@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import React, { useState, useEffect, useRef } from 'react' // Import useRef
 import { useRouter } from 'next/navigation';
+import { event } from '@/lib/helpers/track';
 
 
 
@@ -24,6 +25,13 @@ const BookingSection = ({ clientData, hotels, slots, clientId }: { clientData: a
     const router = useRouter();
     // Build and open WhatsApp message with selected details
     const handleConfirmAndPay = async () => {
+        event({
+            action: 'client_booked',
+            category: 'conversion',
+            label: 'client_booked',
+            value: clientData.earnings * 0.20,
+        });
+
         const selectedHotel = hotels && hotels.length > 0 ? hotels[activeHotel] : null;
         const selectedSlot = slots && slots.length > 0 ? slots[activeSlot] : null;
 
@@ -161,7 +169,7 @@ const BookingSection = ({ clientData, hotels, slots, clientId }: { clientData: a
                 <div className="step-container">
                     <div className="text-container">
                         <span>Step 2</span>
-                        <h3>Choose Date & Time</h3>
+                        <h3>Select Meeting Slot</h3>
                     </div>
                     <div className="slots-container" id='slots-container'>
                         {slots && slots.length > 0 ? slots.map((slot, index) => (

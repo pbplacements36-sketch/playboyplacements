@@ -1,11 +1,12 @@
 'use client';
 
 import React from 'react';
+import { event } from '@/lib/helpers/track';
 
 const containerStyle: React.CSSProperties = {
   position: 'fixed',
   right: 20,
-  bottom: 20,
+  bottom: 80,
   display: 'flex',
   flexDirection: 'column',
   gap: 12,
@@ -42,11 +43,22 @@ export default function FloatingCTAs() {
   const supportText = encodeURIComponent('Hi, I need help with a booking from Playboy Placements.');
 
   const openWhatsApp = () => {
+    event({
+      action: 'click_whatsapp',
+      category: 'contact',
+      label: 'floating_cta_whatsapp'
+    });
+
     const url = `https://wa.me/918266907660?text=${supportText}`
     window.open(url, '_blank', 'noopener');
   };
 
   const openTelegram = () => {
+    event({
+      action: 'click_telegram',
+      category: 'contact',
+      label: 'floating_cta_telegram'
+    });
       window.open(`https://t.me/play_job_boy_gigolo`, '_blank', 'noopener');
       return;
   };

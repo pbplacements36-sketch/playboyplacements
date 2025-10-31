@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import ClientCard from '../ClientCard';
 import { useRouter } from 'next/navigation';
 
@@ -27,6 +27,19 @@ const getCityFromCoords = async (latitude: number, longitude: number) => {
   }
 };
 
+// Helper to get country code from coordinates
+const getCountryCodeFromCoords = async (latitude: number, longitude: number): Promise<string> => {
+    try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+        if (!response.ok) throw new Error('Failed to fetch country');
+        const data = await response.json();
+        return data.address.country_code?.toUpperCase() || 'IN'; // Default to India if not found
+    } catch (error) {
+        console.error("Reverse geocoding failed for country:", error);
+        return 'IN'; // Fallback to India on error
+    }
+};
+
 // Helper to generate random future date
 const generateRandomDate = () => {
   const today = new Date();
@@ -51,26 +64,36 @@ const formatClientId = (fullId: string) => {
 const DashboardClients = () => {
   const [clients, setClients] = useState<Client[]>([]);
   const [userLocation, setUserLocation] = useState<string>("Delhi");
+  const [detectedCountry, setDetectedCountry] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingLocation, setLoadingLocation] = useState(true);
 
   const router = useRouter();
 
-  // Get user's location
+  // Get user's location (city and country)
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
-          const city = await getCityFromCoords(
-            position.coords.latitude,
-            position.coords.longitude
-          );
+          const { latitude, longitude } = position.coords;
+          const city = await getCityFromCoords(latitude, longitude);
+          const countryCode = await getCountryCodeFromCoords(latitude, longitude);
+          
           setUserLocation(city);
+          setDetectedCountry(countryCode);
+          setLoadingLocation(false);
         },
         (error) => {
           console.error("Geolocation error:", error);
-          setUserLocation("Delhi"); // Fallback to Delhi
+          setUserLocation("Delhi");
+          setDetectedCountry("IN");
+          setLoadingLocation(false);
         }
       );
+    } else {
+        setUserLocation("Delhi");
+        setDetectedCountry("IN");
+        setLoadingLocation(false);
     }
   }, []);
 
@@ -92,26 +115,53 @@ const DashboardClients = () => {
     fetchClients();
   }, []);
 
-  if (loading) {
+  const isIndia = useMemo(() => detectedCountry === 'IN', [detectedCountry]);
+
+  if (loading || loadingLocation) {
     return <div>Loading...</div>;
   }
+
+  // Function to format earnings based on country
+  const formatEarnings = (earnings: number) => {
+    if (isIndia) {
+      return {
+        price: earnings,
+        currencySymbol: '₹'
+      };
+    } else {
+      const multiplicationFactor = 5.5;
+      const inrToUsdRate = 83;
+      const multipliedInr = earnings * multiplicationFactor;
+      const rawUsdPrice = multipliedInr / inrToUsdRate;
+      const roundedUsdPrice = Math.round(rawUsdPrice / 10) * 10;
+
+      return {
+        price: roundedUsdPrice,
+        currencySymbol: '$'
+      };
+    }
+  };
 
   return (
     <div className='dashboard-clients'>
       <h2>Hot Clients Near {userLocation} 🔥</h2>
       <div className="clients-container">
-        {clients.slice(0, 10).map((client) => (
-          <ClientCard
-            key={client.id}
-            id={client.id}               // Pass the full UUID
-            displayId={formatClientId(client.id)}  // Pass the formatted ID for display
-            location={userLocation}
-            price={client.earnings}
-            imageUrl={`/${client.images[0]}`}
-            dateTime={generateRandomDate()}
-            isInitiallyExpanded={false}
-          />
-        ))}
+        {clients.slice(0, 10).map((client) => {
+          const { price, currencySymbol } = formatEarnings(client.earnings);
+          return (
+            <ClientCard
+              key={client.id}
+              id={client.id}
+              displayId={formatClientId(client.id)}
+              location={userLocation}
+              price={price}
+              currencySymbol={currencySymbol}
+              imageUrl={`/${client.images[0]}`}
+              dateTime={generateRandomDate()}
+              isInitiallyExpanded={false}
+            />
+          );
+        })}
       </div>
       <button className='view-all-btn' onClick={() => {router.push('/clients');}}>View All</button>
     </div>

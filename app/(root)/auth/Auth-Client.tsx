@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation';
 import React, { useState, useRef } from 'react'
 import toast from "react-hot-toast";
+import { event } from '@/lib/helpers/track';
 
 const AuthClientPage = () => {
     const [isSignIn, setIsSignIn] = useState(true);
@@ -26,6 +27,11 @@ const AuthClientPage = () => {
         setIsLoading(true);
         setError("");
         try {
+            event({
+                action: 'signin-google',
+                category: 'lead',
+                label: 'google_sign_in'
+            });
             await signInSocial(provider); // Uncomment if you have this function
         } catch (err) {
             setError(
@@ -47,6 +53,11 @@ const AuthClientPage = () => {
                 let result: any;
 
                 try {
+                    event({
+                        action: 'signin-email',
+                        category: 'lead',
+                        label: 'email_sign_in'
+                    });
                     result = await signIn(email, password);
                 } catch (err: any) {
                     // If Better Auth throws, show a friendly message
@@ -60,9 +71,21 @@ const AuthClientPage = () => {
                     setError("Invalid email or password"); 
                     toast.error("Invalid email or password");
                 }
-                else router.push("/profile");
+                else {
+                    event({
+                        action: 'signin-complete',
+                        category: 'lead',
+                        label: 'sign_in_complete'
+                    });
+                    router.push("/profile");
+                }
             } else {
             // 1. Sign up with Better Auth
+                event({
+                    action: 'signup-email',
+                    category: 'lead',
+                    label: 'email_sign_up'
+                });
                 const result = await signUp(email, password, name);
                 if (!result.user) {
                     setError("Signup failed");
@@ -120,6 +143,11 @@ const AuthClientPage = () => {
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || "Invalid or expired code");
+            event({
+                action: 'signup-complete',
+                category: 'lead',
+                label: 'sign_up_complete'
+            });
             router.push("/profile");
         } catch (err: any) {
             setError(err.message || "Unknown error");

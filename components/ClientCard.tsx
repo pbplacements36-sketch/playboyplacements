@@ -5,10 +5,11 @@ import { FiMapPin, FiClock, FiCheckCircle } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 
 interface ClientCardProps {
-  id: string;           // Changed to string to accept full UUID
-  displayId: string;    // Added for displaying formatted ID
+  id: string;
+  displayId: string;
   location: string;
   price: number;
+  currencySymbol: string; // Add this new prop
   imageUrl: string;
   dateTime?: string;
   isInitiallyExpanded?: boolean;
@@ -19,6 +20,7 @@ const ClientCard: React.FC<ClientCardProps> = ({
   displayId,
   location,
   price,
+  currencySymbol, // Destructure the new prop
   imageUrl,
   dateTime = '21 Sept, 7PM-12AM',
   isInitiallyExpanded = false,
@@ -31,7 +33,7 @@ const ClientCard: React.FC<ClientCardProps> = ({
     return (
       <div className='client-card'>
         <div className="image-container">
-            <Image src={imageUrl} alt={"displayId"} width={150} height={150} />
+            <Image src={imageUrl} alt={displayId} width={150} height={150} />
         </div>
         <div className="text-container">
             <div className="details">
@@ -42,10 +44,11 @@ const ClientCard: React.FC<ClientCardProps> = ({
                         {location}
                     </p>
                     <p>•</p>
-                    <h3>₹{price.toLocaleString()}</h3>
+                    {/* Use currencySymbol here */}
+                    <h3>{currencySymbol}{price.toLocaleString()}</h3>
                 </div>   
             </div>
-            <button onClick={() => router.push(`/client/${id}`)}>View</button>
+            <button>View</button>
         </div>
       </div>
     );
@@ -81,7 +84,8 @@ const ClientCard: React.FC<ClientCardProps> = ({
                 </div>
                 <div className="detail">
                   <Image src="/assets/dashboard/money.png" alt="Location Icon" width={20} height={20} />
-                  <h3>₹{price.toLocaleString()}</h3>
+                  {/* Use currencySymbol here */}
+                  <h3>{currencySymbol}{price.toLocaleString()}</h3>
                 </div>
               </div>   
             </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import BookingSection from '@/components/sections/BookingSection';
@@ -25,6 +25,19 @@ const getCityFromCoords = async (latitude: number, longitude: number) => {
     } catch (error) {
         console.error("Reverse geocoding failed:", error);
         return 'Delhi'; // Fallback location
+    }
+};
+
+// Helper to get country code from coordinates
+const getCountryCodeFromCoords = async (latitude: number, longitude: number): Promise<string> => {
+    try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+        if (!response.ok) throw new Error('Failed to fetch country');
+        const data = await response.json();
+        return data.address.country_code?.toUpperCase() || 'IN'; // Default to India if not found
+    } catch (error) {
+        console.error("Reverse geocoding failed for country:", error);
+        return 'IN'; // Fallback to India on error
     }
 };
 
@@ -103,6 +116,8 @@ const ClientPage = () => {
     const [userLocation, setUserLocation] = useState<string | null>(null);
     const [currentLocation, setCurrentLocation] = useState<string>("Fetching location...");
     const [user, setUser] = useState<any | null>(null);
+    const [detectedCountry, setDetectedCountry] = useState<string | null>(null);
+    const [loadingLocation, setLoadingLocation] = useState(true);
 
     // fetch current user (real way) from server
     useEffect(() => {
@@ -158,19 +173,26 @@ const ClientPage = () => {
                 async (position) => {
                     const { latitude, longitude } = position.coords;
                     const city = await getCityFromCoords(latitude, longitude);
+                    const countryCode = await getCountryCodeFromCoords(latitude, longitude);
                     setCurrentLocation(city);
                     setUserLocation(city);
+                    setDetectedCountry(countryCode);
+                    setLoadingLocation(false);
                 },
                 (error) => {
                     console.error("Geolocation error: ", error.message);
                     setCurrentLocation("Delhi");
                     setUserLocation("Delhi");
+                    setDetectedCountry("IN");
+                    setLoadingLocation(false);
                 }
             );
         } else {
             console.log("Geolocation is not supported by this browser.");
             setCurrentLocation("Delhi");
             setUserLocation("Delhi");
+            setDetectedCountry("IN");
+            setLoadingLocation(false);
         }
     }, []); // Runs only once on component mount
 
@@ -215,12 +237,45 @@ const ClientPage = () => {
     loadData();
 }, [id, userLocation]);
 
-    if (!clientData) {
+    const isIndia = useMemo(() => detectedCountry === 'IN', [detectedCountry]);
+
+    const { formattedEarnings, formattedDeposit, currencySymbol } = useMemo(() => {
+        if (!clientData) {
+            return { formattedEarnings: '...', formattedDeposit: '...', currencySymbol: '₹' };
+        }
+
+        const baseEarnings = clientData.earnings;
+        let displayPrice = baseEarnings;
+        let symbol = '₹';
+        let locale = 'en-IN';
+        let currency = 'INR';
+
+        if (!isIndia) {
+            const multiplicationFactor = 5.5;
+            const inrToUsdRate = 83;
+            const multipliedInr = baseEarnings * multiplicationFactor;
+            const rawUsdPrice = multipliedInr / inrToUsdRate;
+            const roundedUsdPrice = Math.round(rawUsdPrice / 10) * 10;
+            
+            displayPrice = roundedUsdPrice;
+            symbol = '$';
+            locale = 'en-US';
+            currency = 'USD';
+        }
+
+        const earnings = new Intl.NumberFormat(locale, { style: 'currency', currency: currency, minimumFractionDigits: 0 }).format(displayPrice);
+        const deposit = new Intl.NumberFormat(locale, { style: 'currency', currency: currency, minimumFractionDigits: 0 }).format(displayPrice * 0.20);
+
+        return {
+            formattedEarnings: earnings,
+            formattedDeposit: deposit,
+            currencySymbol: symbol
+        };
+    }, [clientData, isIndia]);
+
+    if (!clientData || loadingLocation) {
         return <div>Loading...</div>; // Or a loading skeleton
     }
-
-    const formattedEarnings = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }).format(clientData.earnings);
-    const formattedDeposit = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }).format(clientData.earnings * 0.20);
 
     // Add this helper function inside the component
     const formatClientId = (fullId: string) => {
@@ -270,26 +325,29 @@ const ClientPage = () => {
                                     className="client-image" 
                                     style={{ width: '100%', height: 'auto' }} 
                                 />
-                                {/* Only show upgrade overlay if user has STANDARD membership but trying to view PREMIUM */}
+                                
+                            </div>
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
+                
+                {/* Only show upgrade overlay if user has STANDARD membership but trying to view PREMIUM */}
                                 {membershipType === 'STANDARD' && clientData.category === 'PREMIUM' && (
                                     <div className="upgrade-overlay">
                                         <p>Upgrade to {clientData.category} to view</p>
+
                                         <button 
-                                            onClick={() => router.push('/membership')}
+                                            onClick={() => router.push('/profile#membership-container')}
                                             className="upgrade-button"
                                         >
                                             Upgrade Now
                                         </button>
                                     </div>
                                 )}
-                            </div>
-                        </SwiperSlide>
-                    ))}
-                </Swiper>
 
                 {/* Only show membership notice if user is inactive */}
                 {membershipType === 'inactive' && (
-                    <div className="membership-notice" role="alert">
+                    <div className="membership-notice">
                         <p>Please activate your account to view full-resolution images</p>
                         <button 
                             onClick={() => router.push('/profile#membership-container')}
@@ -340,7 +398,7 @@ const ClientPage = () => {
                 <div className="info-container">
                     <div className="image-container">
                         <div className="currency-image">
-                            <h1>₹</h1>
+                            <h1>{currencySymbol}</h1>
                         </div>
                         <p>For this booking, you will earn <span>{formattedEarnings}</span> after completion.</p>
                     </div>
