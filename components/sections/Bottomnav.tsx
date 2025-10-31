@@ -9,10 +9,9 @@ type BottomnavProps = {
 
 const navItems = [
   { name: "dashboard", href: "/dashboard", icon: "home" },
-  { name: "bookings", href: "/bookings", icon: "bookings" },
   { name: "clients", href: "/clients", icon: "clients" },
   { name: "profile", href: "/profile", icon: "profile" },
-  { name: "support", href: "/support", icon: "support" },
+  { name: "support", href: "https://wa.me/918266907660", icon: "support" },
 ];
 
 const Bottomnav: React.FC<BottomnavProps> = ({ current, theme }) => {

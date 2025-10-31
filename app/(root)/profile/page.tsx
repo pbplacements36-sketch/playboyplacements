@@ -28,13 +28,9 @@ const Profile = async () => {
           <div className={`status-container ${user?.membershipType !== 'inactive' ? 'active' : 'not-active'}`}>
             <Image
               src={
-                user?.membershipType === 'basic'
-                  ? '/assets/profile/activated.png'
-                  : user?.membershipType === 'standard'
-                  ? '/assets/profile/activated.png'
-                  : user?.membershipType === 'premium'
-                  ? '/assets/profile/activated.png'
-                  : '/assets/profile/close.png'
+                user?.membershipType === 'inactive'
+                  ? '/assets/profile/close.png'
+                  : '/assets/profile/activated.png'
               }
               alt="verified-badge"
               width={16}

@@ -2,12 +2,21 @@
 import React, { useState } from 'react'
 
 const MembershipForm = ({ user }: { user: any }) => {
-  const [selectedPackage, setSelectedPackage] = useState<"basic" | "standard" | "premium">("basic");
+  const [selectedPackage, setSelectedPackage] = useState<"standard" | "premium">("standard");
   const [selectedMethod, setSelectedMethod] = useState<"upi" | "usdt">("upi");
+
+  // Function to handle package selection and scroll
+  const handlePackageSelect = (packageName: "standard" | "premium") => {
+    setSelectedPackage(packageName);
+    // Scroll to the payments-container
+    const paymentsContainer = document.getElementById('payments-container');
+    if (paymentsContainer) {
+      paymentsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   const handleActivateNow = () => {
   const packageDetails = {
-    basic: { name: "Basic", amount: "₹1499" },
     standard: { name: "Standard", amount: "₹4499" },
     premium: { name: "Premium", amount: "₹7999" },
   }[selectedPackage];
@@ -23,19 +32,23 @@ const MembershipForm = ({ user }: { user: any }) => {
     Amount: ${packageDetails.amount}
     Payment Method: ${selectedMethod.toUpperCase()}`;
 
-    const whatsappUrl = `https://wa.me/917016272690?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/918266907660?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
     };
 
   return (
-    <div className="membership-container">
+    <div className="membership-container" id='membership-container'>
           <h3>Activate Your Profile<br /><span>Start Earning Today</span></h3>
           <div className="packages-container" id="packages-container">
             <div className="packs-container">
-              <div className={`package ${selectedPackage === "basic" ? "active" : ""}`} onClick={() => setSelectedPackage("basic")} style={{ cursor: "pointer" }}>
+              <div
+                className={`package gold-pack ${selectedPackage === "standard" ? "active" : ""}`}
+                onClick={() => handlePackageSelect("standard")} // Use the new handler
+                style={{ cursor: "pointer" }}
+              >
                 <div className="content">
-                  <div className="tag"><p>Basic</p></div>
-                  <span>₹1499</span>
+                  <div className="tag"><p>Standard</p></div>
+                  <span>₹4499</span>
                   <p>For beginners who want to start their journey.</p>
                 </div>
                 <hr />
@@ -62,51 +75,18 @@ const MembershipForm = ({ user }: { user: any }) => {
                   </div>
                 </div>
                 <button
-                    className={selectedPackage === "basic" ? "active" : ""}
-                    onClick={(e) => { e.stopPropagation(); setSelectedPackage("basic"); }}
-                    type="button"
-                >
-                    Select Now
-                </button>
-              </div>
-              <div className={`package gold-pack ${selectedPackage === "standard" ? "active" : ""}`} onClick={() => setSelectedPackage("standard")} style={{ cursor: "pointer" }}>
-                <div className="content">
-                  <div className="tag"><p>Standard</p></div>
-                  <span>₹4499</span>
-                  <p>For serious users looking for more exposure.</p>
-                </div>
-                <hr />
-                <div className="features">
-                  <div className="feature">
-                    <img src="/assets/profile/tick-gold.svg" alt="" />
-                    <p>All Features of Basic</p>
-                  </div>
-                  <div className="feature">
-                    <img src="/assets/profile/tick-gold.svg" alt="" />
-                    <p>Premium Client Access</p>
-                  </div>
-                  <div className="feature">
-                    <img src="/assets/profile/tick-gold.svg" alt="" />
-                    <p>Unlimited Chat Requests</p>
-                  </div>
-                  <div className="feature">
-                    <img src="/assets/profile/tick-gold.svg" alt="" />
-                    <p>Higher Profile Ranking</p>
-                  </div>
-                  <div className="feature">
-                    <img src="/assets/profile/tick-gold.svg" alt="" />
-                    <p>Priority Support</p>
-                  </div>
-                </div>
-                <button
                     className={selectedPackage === "standard" ? "active" : ""}
-                    onClick={(e) => { e.stopPropagation(); setSelectedPackage("standard"); }}
+                    onClick={(e) => { e.stopPropagation(); handlePackageSelect("standard"); }} // Also update button click
                     type="button"
                 >
                     Select Now
                 </button>
               </div>
-              <div className={`package best-pack ${selectedPackage === "premium" ? "active" : ""}`} onClick={() => setSelectedPackage("premium")} style={{ cursor: "pointer" }}>
+              <div
+                className={`package best-pack ${selectedPackage === "premium" ? "active" : ""}`}
+                onClick={() => handlePackageSelect("premium")} // Use the new handler
+                style={{ cursor: "pointer" }}
+              >
                 <div className="content">
                   <div className="tag"><p>Premium</p></div>
                   <span>₹7999</span>
@@ -137,7 +117,7 @@ const MembershipForm = ({ user }: { user: any }) => {
                 </div>
                 <button
                     className={selectedPackage === "premium" ? "active" : ""}
-                    onClick={(e) => { e.stopPropagation(); setSelectedPackage("premium"); }}
+                    onClick={(e) => { e.stopPropagation(); handlePackageSelect("premium"); }} // Also update button click
                     type="button"
                 >
                     Select Now
@@ -145,7 +125,7 @@ const MembershipForm = ({ user }: { user: any }) => {
               </div>
             </div>
           </div>
-          <div className="payments-container">
+          <div className="payments-container" id='payments-container'>
             <span>select payment</span>
             <div className="method-container">
               <div className={`method ${selectedMethod === "upi" ? "active" : ""}`} onClick={() => setSelectedMethod("upi")}>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
+import Script from "next/script";
 
 // import { auth } from "@/auth";
 
@@ -16,17 +17,29 @@ export default async function RootLayout({ children, }: { children: React.ReactN
   return (
     <html lang="en">
         <head>
-          <link
-  rel="stylesheet"
-  type="text/css"
-  charSet="UTF-8"
-  href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
-/>
-<link
-  rel="stylesheet"
-  type="text/css"
-  href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
-/>
+          <Script async src="https://www.googletagmanager.com/gtag/js?id=G-0PN0MGRBMV"></Script>
+          <Script id="google-analytics">
+            {
+              `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-0PN0MGRBMV');
+              `
+            }
+          </Script>
+        <link
+          rel="stylesheet"
+          type="text/css"
+          charSet="UTF-8"
+          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
+        />
+        <link
+          rel="stylesheet"
+          type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
+        />
+        
         </head>
         <body
           className="antialiased"

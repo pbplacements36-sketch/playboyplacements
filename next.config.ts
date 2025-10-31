@@ -2,6 +2,14 @@
 const nextConfig = {
   images: {
     unoptimized: true,
+    remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'places.googleapis.com',
+                port: '',
+                pathname: '/**',
+            },
+        ],
   },
   eslint: {
     ignoreDuringBuilds: true,
