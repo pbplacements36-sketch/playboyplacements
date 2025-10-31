@@ -1,13 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export async function GET(
-    request: NextRequest,
-    { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, context: { params: any }) {
     try {
-        const { id } = params;
+        // context.params may be a Promise in newer Next.js typings — await if needed
+        const params = await (context.params && typeof context.params.then === "function"
+            ? context.params
+            : Promise.resolve(context.params));
+
+        const { id } = params || {};
         console.log('API: Fetching client with ID:', id);
+
+        if (!id) {
+            return NextResponse.json({ error: "Missing client id" }, { status: 400 });
+        }
 
         const client = await prisma.client.findUnique({
             where: { id },
@@ -25,7 +31,7 @@ export async function GET(
         if (!client) {
             console.log('API: Client not found for ID:', id);
             return NextResponse.json(
-                { error: "Client not found" }, 
+                { error: "Client not found" },
                 { status: 404 }
             );
         }
