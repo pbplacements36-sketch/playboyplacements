@@ -9,6 +9,7 @@ import { headers } from 'next/headers';
 import React from 'react'
 
 const Clients = async () => {
+  
   const session = await auth.api.getSession({
           headers: await headers(),
         });

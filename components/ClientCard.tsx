@@ -48,7 +48,7 @@ const ClientCard: React.FC<ClientCardProps> = ({
                     <h3>{currencySymbol}{price.toLocaleString()}</h3>
                 </div>   
             </div>
-            <button>View</button>
+            <button onClick={() => router.push(`/client/${id}`)}>View</button>
         </div>
       </div>
     );

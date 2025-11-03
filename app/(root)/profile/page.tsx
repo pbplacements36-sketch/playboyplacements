@@ -9,6 +9,8 @@ import ProfilePhotoUpload from '@/components/ProfilePhotoUpload'
 import MembershipForm from '@/components/MembershipForm'
 
 const Profile = async () => {
+
+  
   const session = await auth.api.getSession({
       headers: await headers(),
     });

@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import ClientCard from '../ClientCard';
 import { useRouter } from 'next/navigation';
+import { useLocation } from '@/hooks/useLocation'; // 1. Import the global hook
 
 interface Client {
   id: string;
@@ -12,38 +13,13 @@ interface Client {
   category: 'STANDARD' | 'PREMIUM';
 }
 
-// Helper to get city name from coordinates
-const getCityFromCoords = async (latitude: number, longitude: number) => {
-  try {
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
-    );
-    if (!response.ok) throw new Error('Failed to fetch location');
-    const data = await response.json();
-    return data.address.city || data.address.town || data.address.village || 'Delhi';
-  } catch (error) {
-    console.error("Reverse geocoding failed:", error);
-    return 'Delhi'; // Fallback location
-  }
-};
+// 2. All local location helper functions have been removed.
+// (getCityFromCoords, getCountryCodeFromCoords, etc. are now in the context)
 
-// Helper to get country code from coordinates
-const getCountryCodeFromCoords = async (latitude: number, longitude: number): Promise<string> => {
-    try {
-        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
-        if (!response.ok) throw new Error('Failed to fetch country');
-        const data = await response.json();
-        return data.address.country_code?.toUpperCase() || 'IN'; // Default to India if not found
-    } catch (error) {
-        console.error("Reverse geocoding failed for country:", error);
-        return 'IN'; // Fallback to India on error
-    }
-};
-
-// Helper to generate random future date
+// Helper to generate random future date (remains here as it's component-specific)
 const generateRandomDate = () => {
   const today = new Date();
-  const randomDays = Math.floor(Math.random() * 8) + 7; // 7-15 days from now
+  const randomDays = Math.floor(Math.random() * 8) + 7;
   const futureDate = new Date(today.setDate(today.getDate() + randomDays));
   
   const timeSlots = ["1PM - 5PM", "7PM - 12AM", "9PM - 2AM", "8PM - 1AM"];
@@ -55,51 +31,26 @@ const generateRandomDate = () => {
   })}, ${randomTime}`;
 };
 
-// Add formatClientId helper
+// Add formatClientId helper (remains here)
 const formatClientId = (fullId: string) => {
   const numericId = parseInt(fullId.slice(-3), 16) % 1000;
   return `Client #${numericId.toString().padStart(3, '0')}`;
 };
 
 const DashboardClients = () => {
+  // 3. Use the global context for all location data. Local state is gone.
+  const { city, isIndia, currencySymbol, loading: locationLoading } = useLocation();
+  
   const [clients, setClients] = useState<Client[]>([]);
-  const [userLocation, setUserLocation] = useState<string>("Delhi");
-  const [detectedCountry, setDetectedCountry] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [loadingLocation, setLoadingLocation] = useState(true);
-
+  const [loadingClients, setLoadingClients] = useState(true);
   const router = useRouter();
 
-  // Get user's location (city and country)
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
-          const city = await getCityFromCoords(latitude, longitude);
-          const countryCode = await getCountryCodeFromCoords(latitude, longitude);
-          
-          setUserLocation(city);
-          setDetectedCountry(countryCode);
-          setLoadingLocation(false);
-        },
-        (error) => {
-          console.error("Geolocation error:", error);
-          setUserLocation("Delhi");
-          setDetectedCountry("IN");
-          setLoadingLocation(false);
-        }
-      );
-    } else {
-        setUserLocation("Delhi");
-        setDetectedCountry("IN");
-        setLoadingLocation(false);
-    }
-  }, []);
+  // 4. All useEffects and functions for requesting location are removed.
 
-  // Fetch clients
+  // Fetch clients (this logic remains)
   useEffect(() => {
     const fetchClients = async () => {
+      setLoadingClients(true);
       try {
         const response = await fetch('/api/clients');
         if (!response.ok) throw new Error('Failed to fetch clients');
@@ -108,54 +59,47 @@ const DashboardClients = () => {
       } catch (error) {
         console.error("Failed to fetch clients:", error);
       } finally {
-        setLoading(false);
+        setLoadingClients(false);
       }
     };
 
     fetchClients();
   }, []);
 
-  const isIndia = useMemo(() => detectedCountry === 'IN', [detectedCountry]);
-
-  if (loading || loadingLocation) {
-    return <div>Loading...</div>;
-  }
-
-  // Function to format earnings based on country
+  // Function to format earnings, now using `isIndia` from the global context
   const formatEarnings = (earnings: number) => {
     if (isIndia) {
-      return {
-        price: earnings,
-        currencySymbol: '₹'
-      };
+      return earnings; // Return the base price
     } else {
+      // Perform the conversion for non-India users
       const multiplicationFactor = 5.5;
       const inrToUsdRate = 83;
       const multipliedInr = earnings * multiplicationFactor;
       const rawUsdPrice = multipliedInr / inrToUsdRate;
-      const roundedUsdPrice = Math.round(rawUsdPrice / 10) * 10;
-
-      return {
-        price: roundedUsdPrice,
-        currencySymbol: '$'
-      };
+      return Math.round(rawUsdPrice / 10) * 10;
     }
   };
 
+  // 5. The complex loading and permission-denied states are removed.
+  // The LocationGate component now handles this globally.
+  if (loadingClients || locationLoading) {
+    return <div>Loading Clients...</div>;
+  }
+
   return (
     <div className='dashboard-clients'>
-      <h2>Hot Clients Near {userLocation} 🔥</h2>
+      {/* 6. Use the `city` from the global context */}
+      <h2>Hot Clients Near {city} 🔥</h2>
       <div className="clients-container">
         {clients.slice(0, 10).map((client) => {
-          const { price, currencySymbol } = formatEarnings(client.earnings);
           return (
             <ClientCard
               key={client.id}
               id={client.id}
               displayId={formatClientId(client.id)}
-              location={userLocation}
-              price={price}
-              currencySymbol={currencySymbol}
+              location={city || 'Your Area'} // Use city from context
+              price={formatEarnings(client.earnings)} // Pass the calculated price
+              currencySymbol={currencySymbol} // Pass the currency symbol from context
               imageUrl={`/${client.images[0]}`}
               dateTime={generateRandomDate()}
               isInitiallyExpanded={false}

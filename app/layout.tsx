@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import Script from "next/script";
+import { LocationProvider } from "@/hooks/useLocation";
+import LocationGate from "@/components/LocationGate";
+import ProgressBar from "@/components/ProgressBar";
 
 // import { auth } from "@/auth";
 
@@ -45,7 +48,13 @@ export default async function RootLayout({ children, }: { children: React.ReactN
           className="antialiased"
         >
           <Toaster position="top-center" />
-          {children}
+          <ProgressBar />
+          <LocationProvider>
+          <LocationGate>
+            {/* Your main app content, navbars, etc. go here */}
+            {children}
+          </LocationGate>
+        </LocationProvider>
         </body>
     </html>
   );

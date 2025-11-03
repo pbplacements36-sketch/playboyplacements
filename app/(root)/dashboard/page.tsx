@@ -11,6 +11,7 @@ import DashboardClients from '@/components/sections/DashboardClients';
 import Membership from '@/components/sections/Membership';
 
 const Dashboard = async () => {
+  
   const session = await auth.api.getSession({
         headers: await headers(),
       });

@@ -9,10 +9,10 @@ const Whatsapp = () => {
             <h2>Live Whatsapp Proofs</h2>
         </div>
         <div className="image-container">
-        {Array.from({ length: 17 }).map((_, i) => (
+        {Array.from({ length: 15 }).map((_, i) => (
           <Image
             key={i}
-            src={`/assets/proofs/chat-${i + 1}.png`}
+            src={`/assets/proofs/chat-${i + 1}.jpg`}
             alt={`WhatsApp Proof ${i + 1}`}
             width={240}
             height={400}

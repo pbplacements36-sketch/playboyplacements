@@ -1,20 +1,9 @@
 "use client";
-import React, { useMemo, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { event } from '@/lib/helpers/track';
+import { useLocation } from '@/hooks/useLocation'; // 1. Import the global hook
 
-// Helper to get country code from coordinates using Nominatim (free reverse geocoding)
-const getCountryFromCoords = async (latitude: number, longitude: number): Promise<string> => {
-    try {
-        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
-        if (!response.ok) throw new Error('Failed to fetch location');
-        const data = await response.json();
-        // Nominatim returns country_code (e.g., 'IN', 'US')
-        return data.address.country_code?.toUpperCase() || 'IN'; // Default to India if not found
-    } catch (error) {
-        console.error("Reverse geocoding failed:", error);
-        return 'IN'; // Fallback to India on error
-    }
-};
+// 2. The local getCountryFromCoords helper function is removed.
 
 const packageDetailsData = {
   inr: {
@@ -28,54 +17,32 @@ const packageDetailsData = {
 };
 
 const MembershipForm = ({ user }: { user: any }) => {
-  // State to store the country detected by client-side geolocation
-  const [detectedCountry, setDetectedCountry] = useState<string | null>(null);
-  // State to manage loading status of geolocation
-  const [loadingLocation, setLoadingLocation] = useState(true);
+  // 3. Use the global context for location data.
+  const { isIndia, country, loading: locationLoading } = useLocation();
 
-  // Effect to get user's geolocation when the component mounts
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
-          const countryCode = await getCountryFromCoords(latitude, longitude);
-          setDetectedCountry(countryCode);
-          setLoadingLocation(false);
-        },
-        (error) => {
-          console.error("Geolocation error: ", error.message);
-          setDetectedCountry('IN'); // Fallback to India on error
-          setLoadingLocation(false);
-        }
-      );
-    } else {
-      console.log("Geolocation is not supported by this browser, defaulting to India.");
-      setDetectedCountry('IN'); // Fallback to India if not supported
-      setLoadingLocation(false);
-    }
-  }, []); // Run only once on component mount
+  // 4. All local state for location detection is removed.
+  // const [detectedCountry, setDetectedCountry] = useState<string | null>(null);
+  // const [loadingLocation, setLoadingLocation] = useState(true);
 
-  // Determine if the user is from India based on the detected country
-  const isIndia = useMemo(() => detectedCountry === 'IN', [detectedCountry]);
+  // 5. The useEffect for fetching geolocation is removed.
+
+  // Determine packages based on `isIndia` from the global context
   const currentPackages = isIndia ? packageDetailsData.inr : packageDetailsData.usd;
 
   const [selectedPackage, setSelectedPackage] = useState<"standard" | "premium">("standard");
-  // Initialize selectedMethod based on isIndia, but only after location is loaded
-  const [selectedMethod, setSelectedMethod] = useState<"upi" | "usdt">("usdt"); // Default to usdt
+  const [selectedMethod, setSelectedMethod] = useState<"upi" | "usdt">("usdt");
 
-  // Update selectedMethod once location is loaded and isIndia is determined
+  // Update the default payment method based on the global location context
   useEffect(() => {
-    if (!loadingLocation) {
+    if (!locationLoading) {
       setSelectedMethod(isIndia ? "upi" : "usdt");
     }
-  }, [isIndia, loadingLocation]);
+  }, [isIndia, locationLoading]);
 
 
   // Function to handle package selection and scroll
   const handlePackageSelect = (packageName: "standard" | "premium") => {
     setSelectedPackage(packageName);
-    // Scroll to the payments-container
     const paymentsContainer = document.getElementById('payments-container');
     if (paymentsContainer) {
       paymentsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -83,17 +50,17 @@ const MembershipForm = ({ user }: { user: any }) => {
   };
 
   const handleActivateNow = () => {
-  const packageDetails = currentPackages[selectedPackage];
-  const message = `
-    User's Name: ${user?.name || ""}
-    Email: ${user?.email || ""}
-    Age: ${user?.age || ""}
-    Phone: ${user?.phone || ""}
-    City: ${user?.city || ""}
-    Country: ${detectedCountry || user?.country || "N/A"}
-    Package: ${packageDetails.name}
-    Amount: ${packageDetails.currency}${packageDetails.amount}
-    Payment Method: ${selectedMethod.toUpperCase()}`;
+    const packageDetails = currentPackages[selectedPackage];
+    const message = `
+      User's Name: ${user?.name || ""}
+      Email: ${user?.email || ""}
+      Age: ${user?.age || ""}
+      Phone: ${user?.phone || ""}
+      City: ${user?.city || ""}
+      Country: ${country || user?.country || "N/A"} 
+      Package: ${packageDetails.name}
+      Amount: ${packageDetails.currency}${packageDetails.amount}
+      Payment Method: ${selectedMethod.toUpperCase()}`;
 
     const whatsappUrl = `https://wa.me/918266907660?text=${encodeURIComponent(message)}`;
      event({
@@ -103,17 +70,10 @@ const MembershipForm = ({ user }: { user: any }) => {
         value: packageDetails.amount,
      });
     window.open(whatsappUrl, "_blank");
-    };
+  };
 
-  // Show a loading state while geolocation is being fetched
-  if (loadingLocation) {
-    return (
-      <div className="membership-container" id='membership-container'>
-        <h3>Loading Location...</h3>
-        <p>Please allow location access to determine pricing and payment methods.</p>
-      </div>
-    );
-  }
+  // 6. The local loading check is removed. LocationGate handles this globally.
+  // if (loadingLocation) { ... }
 
   return (
     <div className="membership-container" id='membership-container'>

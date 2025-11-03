@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import BookingSection from '@/components/sections/BookingSection';
+import { useLocation } from '@/hooks/useLocation'; // 1. Import the global hook
 
 // Import Swiper React components and styles
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -12,34 +13,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 
 
-// --- Mock Data & Helpers ---
-
-// Helper to get city name from coordinates using a free reverse geocoding service
-const getCityFromCoords = async (latitude: number, longitude: number) => {
-    try {
-        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
-        if (!response.ok) throw new Error('Failed to fetch location');
-        const data = await response.json();
-        // The city can be in 'city', 'town', or 'village' property
-        return data.address.city || data.address.town || data.address.village || 'Delhi';
-    } catch (error) {
-        console.error("Reverse geocoding failed:", error);
-        return 'Delhi'; // Fallback location
-    }
-};
-
-// Helper to get country code from coordinates
-const getCountryCodeFromCoords = async (latitude: number, longitude: number): Promise<string> => {
-    try {
-        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
-        if (!response.ok) throw new Error('Failed to fetch country');
-        const data = await response.json();
-        return data.address.country_code?.toUpperCase() || 'IN'; // Default to India if not found
-    } catch (error) {
-        console.error("Reverse geocoding failed for country:", error);
-        return 'IN'; // Fallback to India on error
-    }
-};
+// --- Helpers (non-location related) ---
 
 // Update the getHotelSuggestions function to properly use category
 const getHotelSuggestions = async (city: string, category: string) => {
@@ -110,16 +84,16 @@ const ClientPage = () => {
     const params = useParams();
     const id = params.id as string;
 
+    // 3. Use the global context for location data
+    const { city, isIndia, currencySymbol, loading: locationLoading } = useLocation();
+
     const [clientData, setClientData] = useState<any>(null);
     const [slots, setSlots] = useState<any[]>([]);
     const [hotels, setHotels] = useState<any[]>([]);
-    const [userLocation, setUserLocation] = useState<string | null>(null);
-    const [currentLocation, setCurrentLocation] = useState<string>("Fetching location...");
     const [user, setUser] = useState<any | null>(null);
-    const [detectedCountry, setDetectedCountry] = useState<string | null>(null);
-    const [loadingLocation, setLoadingLocation] = useState(true);
-
-    // fetch current user (real way) from server
+    const [loadingClientData, setLoadingClientData] = useState(true); // New state for client-specific data loading
+    
+    // fetch current user (this logic remains)
     useEffect(() => {
         const loadUser = async () => {
             try {
@@ -166,90 +140,48 @@ const ClientPage = () => {
         console.log('Current membership type:', membershipType);
     }, [membershipType]);
 
-    // Update the geolocation effect
+    // Load all other data once the location (city) is known from the context
     useEffect(() => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                async (position) => {
-                    const { latitude, longitude } = position.coords;
-                    const city = await getCityFromCoords(latitude, longitude);
-                    const countryCode = await getCountryCodeFromCoords(latitude, longitude);
-                    setCurrentLocation(city);
-                    setUserLocation(city);
-                    setDetectedCountry(countryCode);
-                    setLoadingLocation(false);
-                },
-                (error) => {
-                    console.error("Geolocation error: ", error.message);
-                    setCurrentLocation("Delhi");
-                    setUserLocation("Delhi");
-                    setDetectedCountry("IN");
-                    setLoadingLocation(false);
-                }
-            );
-        } else {
-            console.log("Geolocation is not supported by this browser.");
-            setCurrentLocation("Delhi");
-            setUserLocation("Delhi");
-            setDetectedCountry("IN");
-            setLoadingLocation(false);
-        }
-    }, []); // Runs only once on component mount
+        // Depend on `city` from the context now
+        if (!id || !city) return;
 
-    // 2. Load all other data once the location is known
-    useEffect(() => {
-    if (!id || !userLocation) return;
+        const loadData = async () => {
+            setLoadingClientData(true); // Start loading
+            try {
+                const res = await fetch(`/api/clients/${id}`);
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                const data = await res.json();
+                setClientData(data);
 
-    const loadData = async () => {
-        try {
-            console.log('Fetching client with ID:', id);
-            
-            const res = await fetch(`/api/clients/${id}`, {
-                headers: {
-                    'Accept': 'application/json'
-                }
-            });
-            
-            if (!res.ok) {
-                const errorText = await res.text();
-                console.error("Error response:", errorText);
-                throw new Error(`HTTP error! status: ${res.status}`);
+                // Fetch hotel data using `city` from the context
+                const hotelData = await getHotelSuggestions(city, data.category);
+                setHotels(hotelData);
+
+                // Get booking slots
+                const persistentSlots = getOrGeneratePersistentSlots(id);
+                setSlots(persistentSlots);
+            } catch (error) {
+                console.error("Failed to load data:", error);
+                setClientData(null);
+            } finally {
+                setLoadingClientData(false); // End loading
             }
-            
-            const data = await res.json();
-            console.log('Received client data:', data);
-            setClientData(data);
+        };
 
-            // Fetch hotel data with proper category
-            console.log('Fetching hotels for category:', data.category);
-            const hotelData = await getHotelSuggestions(userLocation, data.category);
-            setHotels(hotelData);
+        loadData();
+    }, [id, city]); // Dependency array updated to use `city`
 
-            // Get booking slots
-            const persistentSlots = getOrGeneratePersistentSlots(id);
-            setSlots(persistentSlots);
-        } catch (error) {
-            console.error("Failed to load data:", error);
-            setClientData(null); // Reset client data on error
-        }
-    };
-
-    loadData();
-}, [id, userLocation]);
-
-    const isIndia = useMemo(() => detectedCountry === 'IN', [detectedCountry]);
-
-    const { formattedEarnings, formattedDeposit, currencySymbol } = useMemo(() => {
+    const { formattedEarnings, formattedDeposit } = useMemo<{ formattedEarnings: string; formattedDeposit: string }>(() => {
         if (!clientData) {
-            return { formattedEarnings: '...', formattedDeposit: '...', currencySymbol: '₹' };
+            return { formattedEarnings: '...', formattedDeposit: '...' };
         }
 
         const baseEarnings = clientData.earnings;
         let displayPrice = baseEarnings;
-        let symbol = '₹';
         let locale = 'en-IN';
         let currency = 'INR';
 
+        // Use `isIndia` from the global context
         if (!isIndia) {
             const multiplicationFactor = 5.5;
             const inrToUsdRate = 83;
@@ -258,7 +190,6 @@ const ClientPage = () => {
             const roundedUsdPrice = Math.round(rawUsdPrice / 10) * 10;
             
             displayPrice = roundedUsdPrice;
-            symbol = '$';
             locale = 'en-US';
             currency = 'USD';
         }
@@ -266,15 +197,20 @@ const ClientPage = () => {
         const earnings = new Intl.NumberFormat(locale, { style: 'currency', currency: currency, minimumFractionDigits: 0 }).format(displayPrice);
         const deposit = new Intl.NumberFormat(locale, { style: 'currency', currency: currency, minimumFractionDigits: 0 }).format(displayPrice * 0.20);
 
-        return {
-            formattedEarnings: earnings,
-            formattedDeposit: deposit,
-            currencySymbol: symbol
-        };
+        return { formattedEarnings: earnings, formattedDeposit: deposit  };
     }, [clientData, isIndia]);
 
-    if (!clientData || loadingLocation) {
-        return <div>Loading...</div>; // Or a loading skeleton
+    // 7. The loading check now uses `locationLoading` from the context AND local loading state.
+     if (!clientData || locationLoading || loadingClientData) {
+        return (
+            <div className='loader-overlay'> {/* Use the global loader-overlay class */}
+                <div className="loader-text-content"> {/* New container for text */}
+                    <h2>Loading Client Details...</h2>
+                    <p>Please wait while we fetch the client's information.</p>
+                </div>
+                <div className="spinner"></div> {/* Directly use the spinner class */}
+            </div>
+        );
     }
 
     // Add this helper function inside the component
@@ -369,7 +305,8 @@ const ClientPage = () => {
                 <div className="client-info">
                     <div className="item">
                         <Image src="/assets/client-page/location.png" alt="Location Icon" width={20} height={20} />
-                        <span>{currentLocation}</span>
+                        {/* 8. Use `city` from the global context */}
+                        <span>{city}</span>
                     </div>
                     <div className="item">
                         <Image src="/assets/client-page/clock.png" alt="Clock Icon" width={20} height={20} />
@@ -398,6 +335,7 @@ const ClientPage = () => {
                 <div className="info-container">
                     <div className="image-container">
                         <div className="currency-image">
+                            {/* 9. Use `currencySymbol` from the global context */}
                             <h1>{currencySymbol}</h1>
                         </div>
                         <p>For this booking, you will earn <span>{formattedEarnings}</span> after completion.</p>
