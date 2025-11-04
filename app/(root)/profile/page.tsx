@@ -7,6 +7,8 @@ import { headers } from 'next/headers'
 import ProfileForm from '@/components/ProfileForm'
 import ProfilePhotoUpload from '@/components/ProfilePhotoUpload'
 import MembershipForm from '@/components/MembershipForm'
+import LocationRequiredWrapper from '@/components/LocationRequiredWrapper'
+import { LocationProvider } from '@/hooks/useLocation'
 
 const Profile = async () => {
 
@@ -20,6 +22,8 @@ const Profile = async () => {
   const user = await prisma.user.findUnique({ where: { email: session_email } });
 
   return (
+    <LocationProvider>
+    <LocationRequiredWrapper>
     <div className='dashboard-page profile'>
         <ProfilePhotoUpload user={user} />
         <div className="name-container">
@@ -49,6 +53,8 @@ const Profile = async () => {
         <MembershipForm user={user} />
         <Bottomnav current="profile" theme="dark" />
     </div>
+    </LocationRequiredWrapper>
+    </LocationProvider>
   )
 }
 

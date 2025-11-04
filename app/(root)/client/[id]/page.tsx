@@ -4,21 +4,23 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import BookingSection from '@/components/sections/BookingSection';
-import { useLocation } from '@/hooks/useLocation'; // 1. Import the global hook
+import { LocationProvider, useLocation } from '@/hooks/useLocation';
 
 // Import Swiper React components and styles
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import LocationRequiredWrapper from '@/components/LocationRequiredWrapper';
 
 
 // --- Helpers (non-location related) ---
 
-// Update the getHotelSuggestions function to properly use category
-const getHotelSuggestions = async (city: string, category: string) => {
+// Update the getHotelSuggestions function to properly use isIndia
+const getHotelSuggestions = async (city: string, isIndia: boolean) => { // NEW: Changed category to isIndia
     try {
-        const response = await fetch(`/api/hotels?city=${encodeURIComponent(city)}&category=${encodeURIComponent(category)}`);
+        // NEW: Pass isIndia as a query parameter
+        const response = await fetch(`/api/hotels?city=${encodeURIComponent(city)}&isIndia=${isIndia}`);
         if (!response.ok) {
             throw new Error('Failed to fetch hotels');
         }
@@ -79,19 +81,19 @@ const getOrGeneratePersistentSlots = (clientId: string) => {
 };
 
 
-const ClientPage = () => {
+const ClientPageContent = () => {
     const router = useRouter();
     const params = useParams();
     const id = params.id as string;
 
     // 3. Use the global context for location data
-    const { city, isIndia, currencySymbol, loading: locationLoading } = useLocation();
+    const { city, isIndia, currencySymbol, loading: locationLoading } = useLocation(); // isIndia is available here
 
     const [clientData, setClientData] = useState<any>(null);
     const [slots, setSlots] = useState<any[]>([]);
     const [hotels, setHotels] = useState<any[]>([]);
     const [user, setUser] = useState<any | null>(null);
-    const [loadingClientData, setLoadingClientData] = useState(true); // New state for client-specific data loading
+    const [loadingClientData, setLoadingClientData] = useState(true);
     
     // fetch current user (this logic remains)
     useEffect(() => {
@@ -153,8 +155,8 @@ const ClientPage = () => {
                 const data = await res.json();
                 setClientData(data);
 
-                // Fetch hotel data using `city` from the context
-                const hotelData = await getHotelSuggestions(city, data.category);
+                // Fetch hotel data using `city` and `isIndia` from the context
+                const hotelData = await getHotelSuggestions(city, isIndia); // NEW: Pass isIndia here
                 setHotels(hotelData);
 
                 // Get booking slots
@@ -169,7 +171,7 @@ const ClientPage = () => {
         };
 
         loadData();
-    }, [id, city]); // Dependency array updated to use `city`
+    }, [id, city, isIndia]); // Dependency array updated to include `isIndia`
 
     const { formattedEarnings, formattedDeposit } = useMemo<{ formattedEarnings: string; formattedDeposit: string }>(() => {
         if (!clientData) {
@@ -200,19 +202,6 @@ const ClientPage = () => {
         return { formattedEarnings: earnings, formattedDeposit: deposit  };
     }, [clientData, isIndia]);
 
-    // 7. The loading check now uses `locationLoading` from the context AND local loading state.
-     if (!clientData || locationLoading || loadingClientData) {
-        return (
-            <div className='loader-overlay'> {/* Use the global loader-overlay class */}
-                <div className="loader-text-content"> {/* New container for text */}
-                    <h2>Loading Client Details...</h2>
-                    <p>Please wait while we fetch the client's information.</p>
-                </div>
-                <div className="spinner"></div> {/* Directly use the spinner class */}
-            </div>
-        );
-    }
-
     // Add this helper function inside the component
     const formatClientId = (fullId: string) => {
         // Extract last 3 digits or generate a number from the hash
@@ -226,6 +215,19 @@ const ClientPage = () => {
         if (membershipType === 'PREMIUM') return true;
         return membershipType === clientData.category;
     };
+
+    // 7. The loading check now uses `locationLoading` from the context AND local loading state.
+     if (!clientData || locationLoading || loadingClientData) {
+        return (
+            <div className='loader-overlay'> {/* Use the global loader-overlay class */}
+                <div className="loader-text-content"> {/* New container for text */}
+                    <h2>Loading Client Details...</h2>
+                    <p>Please wait while we fetch the client's information.</p>
+                </div>
+                <div className="spinner"></div> {/* Directly use the spinner class */}
+            </div>
+        );
+    }
 
     return (
         <div className='client-page'>
@@ -350,5 +352,15 @@ const ClientPage = () => {
         </div>
     )
 }
+
+const ClientPage = () => {
+  return (
+    <LocationProvider>
+      <LocationRequiredWrapper>
+        <ClientPageContent />
+      </LocationRequiredWrapper>
+    </LocationProvider>
+  );
+};
 
 export default ClientPage;

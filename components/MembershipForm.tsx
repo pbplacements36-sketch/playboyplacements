@@ -7,8 +7,8 @@ import { useLocation } from '@/hooks/useLocation'; // 1. Import the global hook
 
 const packageDetailsData = {
   inr: {
-    standard: { name: "Standard", amount: 4499, currency: "₹", currencyCode: "INR" },
-    premium: { name: "Premium", amount: 7999, currency: "₹", currencyCode: "INR" },
+    standard: { name: "Standard", amount: 2999, currency: "₹", currencyCode: "INR" },
+    premium: { name: "Premium", amount: 5999, currency: "₹", currencyCode: "INR" },
   },
   usd: {
     standard: { name: "Standard", amount: 300, currency: "$", currencyCode: "USD" },

@@ -9,6 +9,8 @@ import DashboardStats from '@/components/DashboardStats';
 import ClientCard from '@/components/ClientCard';
 import DashboardClients from '@/components/sections/DashboardClients';
 import Membership from '@/components/sections/Membership';
+import LocationRequiredWrapper from '@/components/LocationRequiredWrapper';
+import { LocationProvider } from '@/hooks/useLocation';
 
 const Dashboard = async () => {
   
@@ -21,13 +23,17 @@ const Dashboard = async () => {
     const user = await prisma.user.findUnique({ where: { email: session_email } });
 
   return (
-    <div className='dashboard-page dashboard'> 
-        <DashboardUserDetails user={user} />
-        <DashboardStats />
-        <DashboardClients />
-        <Membership user={user} />
-        <Bottomnav current="dashboard" theme="dark" />
-    </div>
+    <LocationProvider>
+    <LocationRequiredWrapper>
+      <div className='dashboard-page dashboard'> 
+          <DashboardUserDetails user={user} />
+          <DashboardStats />
+          <DashboardClients />
+          <Membership user={user} />
+          <Bottomnav current="dashboard" theme="dark" />
+      </div>
+    </LocationRequiredWrapper>
+    </LocationProvider>
   )
 }
 

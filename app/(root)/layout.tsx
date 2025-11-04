@@ -5,10 +5,9 @@ import { Toaster } from "react-hot-toast";
 export default async function Layout({ children }: { children: React.ReactNode }) {
 
     return (
-        <main className="root">
-            {/* <Header session={session} /> */}
+       <main className="root">
             <Toaster position="top-center" />
-            {children}
+                {children}
             <FloatingCTAs />
         </main>
 

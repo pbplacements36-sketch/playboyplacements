@@ -12,9 +12,10 @@ interface Client {
   category: 'STANDARD' | 'PREMIUM';
 }
 
-const generateRandomDate = () => {
+// Helper to generate a single random date/time string
+const generateSingleRandomDateTime = () => {
   const today = new Date();
-  const randomDays = Math.floor(Math.random() * 8) + 7;
+  const randomDays = Math.floor(Math.random() * 8) + 7; // 7 to 14 days from now
   const futureDate = new Date(today.setDate(today.getDate() + randomDays));
   
   const timeSlots = ["1PM - 5PM", "7PM - 12AM", "9PM - 2AM", "8PM - 1AM"];
@@ -25,6 +26,32 @@ const generateRandomDate = () => {
     month: 'short'
   })}, ${randomTime}`;
 };
+
+// NEW: Helper to get or generate persistent date/time for a client
+const getOrGeneratePersistentDateTime = (clientId: string) => {
+  const storageKey = `client_datetime_${clientId}`;
+  const storedData = localStorage.getItem(storageKey);
+  const expiryDuration = 2 * 24 * 60 * 60 * 1000; // 2 days in milliseconds
+
+  if (storedData) {
+    try {
+      const { dateTime, expiry } = JSON.parse(storedData);
+      if (new Date().getTime() < expiry) {
+        return dateTime; // Return stored if not expired
+      }
+    } catch (e) {
+      console.error("Failed to parse stored client datetime:", e);
+      localStorage.removeItem(storageKey); // Clear corrupted data
+    }
+  }
+
+  // If no valid stored data, generate new and store
+  const newDateTime = generateSingleRandomDateTime();
+  const newExpiry = new Date().getTime() + expiryDuration;
+  localStorage.setItem(storageKey, JSON.stringify({ dateTime: newDateTime, expiry: newExpiry }));
+  return newDateTime;
+};
+
 
 const formatClientId = (fullId: string) => {
   const numericId = parseInt(fullId.slice(-3), 16) % 1000;
@@ -41,9 +68,6 @@ const ClientsSection = () => {
     const fetchClients = async () => {
       setLoadingClients(true);
       try {
-        // REMOVE THE TEMPORARY DELAY HERE if you added it for testing
-        // await new Promise(resolve => setTimeout(resolve, 1500)); 
-
         const response = await fetch('/api/clients');
         if (!response.ok) throw new Error('Failed to fetch clients');
         const data = await response.json();
@@ -70,7 +94,6 @@ const ClientsSection = () => {
     }
   };
 
-  // RE-ENABLE THE LOCAL LOADING STATE HERE
   if (loadingClients || locationLoading) {
     return (
       <div className='clients-section loading-state'>
@@ -79,7 +102,7 @@ const ClientsSection = () => {
           <p>Please wait while we fetch available opportunities.</p>
         </div>
         <div className="spinner-container">
-          <div className="spinner"></div> {/* Use the same spinner style */}
+          <div className="spinner"></div>
         </div>
       </div>
     );
@@ -110,7 +133,7 @@ const ClientsSection = () => {
               price={formatEarnings(client.earnings)}
               currencySymbol={currencySymbol}
               imageUrl={`/${client.images[0]}`}
-              dateTime={generateRandomDate()}
+              dateTime={getOrGeneratePersistentDateTime(client.id)}
               isInitiallyExpanded={true}
             />
           );
@@ -131,7 +154,7 @@ const ClientsSection = () => {
               price={formatEarnings(client.earnings)}
               currencySymbol={currencySymbol}
               imageUrl={`/${client.images[0]}`}
-              dateTime={generateRandomDate()}
+              dateTime={getOrGeneratePersistentDateTime(client.id)}
               isInitiallyExpanded={true}
             />
           );

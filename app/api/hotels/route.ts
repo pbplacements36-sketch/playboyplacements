@@ -3,7 +3,9 @@ import { NextResponse } from 'next/server';
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const city = searchParams.get('city');
-    const category = searchParams.get('category'); // Get the new category parameter
+    // const category = searchParams.get('category'); // REMOVE: No longer needed for textQuery
+    const isIndiaParam = searchParams.get('isIndia'); // NEW: Get isIndia parameter
+    const isIndia = isIndiaParam === 'true'; // Convert string to boolean
 
     if (!city) {
         return NextResponse.json({ error: 'City is required' }, { status: 400 });
@@ -14,10 +16,10 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: 'API key is not configured' }, { status: 500 });
     }
 
-    // Determine the search query based on the client's category
-    const textQuery = category === 'PREMIUM'
-        ? `top rated hotels in ${city}`
-        : `budget hotels in ${city}`;
+    // Determine the search query based on the user's country (isIndia)
+    const textQuery = isIndia
+        ? `nearest oyo in ${city}` // For India
+        : `budget airbnb in ${city}`; // For other countries
 
     const url = 'https://places.googleapis.com/v1/places:searchText';
     const requestBody = {
@@ -40,7 +42,9 @@ export async function GET(request: Request) {
 
         if (!data.places || data.places.length === 0) {
             console.error('Google Places API (New) Error or no results:', data);
-            return NextResponse.json({ error: 'Failed to fetch hotel data or no hotels found' }, { status: 500 });
+            // Return an empty array of hotels instead of a 500 error if no places are found
+            // This allows the page to render without hotels, which is better UX than a full error.
+            return NextResponse.json([]); 
         }
 
         const hotels = data.places.map((place: any) => {
