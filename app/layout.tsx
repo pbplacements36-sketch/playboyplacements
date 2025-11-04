@@ -41,7 +41,7 @@ export default async function RootLayout({ children, }: { children: React.ReactN
           type="text/css"
           href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
         />
-        
+        <meta name="google-site-verification" content="ByZv47uKTbz9ohBUbrUTb2ULxk8KURbyG8WBmClfJdI" />
         </head>
         <body
           className="antialiased"
