@@ -34,13 +34,13 @@ const Hero = () => {
                         onClick={() => {
                             // 3. Fire the analytics event on click
                             event({
-                                action: 'click_create_profile',
+                                action: 'login_btn',
                                 category: 'conversion',
-                                label: 'hero_create_profile_button'
+                                label: 'login_btn'
                             });
                         }}
                     >
-                        Learn More
+                        Login
                     </Link>
             </div>
         </div>

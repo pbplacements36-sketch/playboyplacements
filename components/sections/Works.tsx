@@ -26,7 +26,7 @@ const Works = () => {
                 <div className="text-container">
                     <span>Step 2</span>
                     <h4>Membership Activation</h4>
-                    <p>India me ₹4500, international members ke liye $250 fee. Ye ensure karta hai ki sirf serious log join karein.</p>
+                    <p>India me ₹2999, international members ke liye $165 fee. Ye ensure karta hai ki sirf serious log join karein.</p>
                 </div>
             </div>
              <div className="step">
