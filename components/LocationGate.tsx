@@ -1,10 +1,16 @@
 'use client';
 
 import { useLocation } from '@/hooks/useLocation';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { isInAppBrowser, openInExternalBrowser } from '@/utils/inAppBrowserDetector'; // Import the detector
 
 const LocationGate = ({ children }: { children: React.ReactNode }) => {
-  const { loading, permission, requestLocation, country } = useLocation(); // Also get 'country' to check if location data is available
+  const { loading, permission, requestLocation, country } = useLocation();
+  const [isCurrentInAppBrowser, setIsCurrentInAppBrowser] = useState(false);
+
+  useEffect(() => {
+    setIsCurrentInAppBrowser(isInAppBrowser());
+  }, []);
 
   // If loading, show the spinner
   if (loading) {
@@ -20,19 +26,35 @@ const LocationGate = ({ children }: { children: React.ReactNode }) => {
   }
 
   // If permission is denied AND we don't have a stored location (country is null)
-  // This ensures that if a location was previously granted and stored, we don't block even if permission is later denied.
   if (permission === 'denied' && !country) {
     return (
-      <div className="loader-overlay"> {/* Reusing the loader-overlay for consistent styling */}
+      <div className="loader-overlay">
         <div className="loader-text-content">
-          <h2>Location Access Blocked</h2>
-          <p>
-            You've previously blocked location access for this site, or it was denied. To enable it, please go to your browser's site's settings (usually by clicking the 🔒 icon in the address bar), allow location access, and then click 'Try Again'.
-          </p>
+          <h2>Location Access Required</h2>
+          {isCurrentInAppBrowser ? (
+            <>
+              <p>
+                It looks like you're using an in-app browser (e.g., from Telegram or WhatsApp) which often blocks location access.
+                Please open this page in your device's default browser (like Chrome or Safari) to grant location permission.
+              </p>
+              <button
+                className="view-all-btn"
+                onClick={() => openInExternalBrowser(window.location.href)} // Attempt to open current URL
+              >
+                Open in Browser
+              </button>
+            </>
+          ) : (
+            <>
+              <p>
+                You've previously blocked location access for this site, or it was denied. To enable it, please go to your browser's site settings (usually by clicking the 🔒 icon in the address bar), allow location access, and then click 'Try Again'.
+              </p>
+              <button className="view-all-btn" onClick={requestLocation}>
+                Try Again
+              </button>
+            </>
+          )}
         </div>
-        <button className="view-all-btn" onClick={requestLocation}>
-          Try Again
-        </button>
       </div>
     );
   }
